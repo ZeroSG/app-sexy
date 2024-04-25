@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [{
+            "appID": "LW52J4QF4M.com.orangethailand.sexy",
+            "paths": [
+                "/api/*"
+            ]
+        }]
+    }
+}

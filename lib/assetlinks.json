@@ -1,0 +1,10 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+        "namespace": "android_app",
+        "package_name": "com.orangethailand.sexy",
+        "sha256_cert_fingerprints": ["11:6C:C4:1D:31:31:9F:AF:FE:F8:EE:85:6C:A8:6D:8C:44:68:19:44:AD:9E:07:D1:44:AF:C7:23:2F:0A:2C:E7"
+
+        ]
+    }
+}]
