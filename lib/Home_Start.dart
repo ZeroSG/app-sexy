@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import 'Style/style.dart';
 import 'Widget/login/login.dart';
 import 'Widget/register/register.dart';
+import 'my_constant.dart';
 
 class Home_Start extends StatefulWidget {
   const Home_Start({super.key});
@@ -19,24 +20,39 @@ class _Home_StartState extends State<Home_Start> {
   void initState() {
    
     super.initState();
-     Logo();
+     show_logo();
   }
 
 
-  Future<void> Logo() async {
+   Future<void> show_logo() async {
     try {
       setState(() {
         loading = true;
       });
-       SharedPreferences preferences = await SharedPreferences.getInstance();
-
-         
-      setState(() {
-          logo = preferences.getString('logo').toString();
-        loading = false;
-      });
+      var uri = Uri.parse('${MyConstant().domain}/show_logo');
+       var ressum = await http.get(uri,
+      
+            );
               
-     
+      if(ressum.statusCode == 200){
+          var  lnformation  = jsonDecode(ressum.body);
+
+        setState(() {
+         logo  =lnformation['data']['data'][0]['path'].toString();
+          loading = false;
+       
+        
+                
+ 
+       
+         
+        });
+          // data_promotion_stores();
+    }else {
+     setState(() {
+         loading = false;
+      });
+    }
     } catch (e) {
       print('e ===>1 ${e.toString()} ');
     }
@@ -83,7 +99,7 @@ String name = '',logo = '';
                            alignment: Alignment.center,
                            height: 200,
                            width: MediaQuery.of(context).size.width,
-                         child: Image.network(logo)
+                         child: Image.network('https://fern.orangeworkshop.info/sexy/public/upload/logo/$logo')
                        ),
                          
                       

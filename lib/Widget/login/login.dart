@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,6 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'Receive_the_product.dart';
+import 'google_sigin_api.dart';
 
 
 class Login extends StatefulWidget {
@@ -97,8 +100,8 @@ bool isChecked = false;
                 child: SingleChildScrollView(
                      physics: BouncingScrollPhysics(),
                   child: Column(children: [
-                      TextFieldlogin('อีเมล',_emailController,30.0),
-                      TextFieldlogin('รหัสผ่าน',_passwordController,0.0),
+                      TextFieldlogin(1,'อีเมล',_emailController,30.0),
+                      TextFieldlogin(2,'รหัสผ่าน',_passwordController,0.0),
                        Padding(
                          padding: const EdgeInsets.only(right: 30,left: 20,top: 0),
                          child: Row(
@@ -167,41 +170,46 @@ bool isChecked = false;
                        Container(height: 10,),
                        Padding(
                          padding: const EdgeInsets.only(right: 30,left: 30,top: 0),
-                         child: Card(
-                           elevation: 5,
-                           color: Color(0xffFFFFFF),
-                           shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  // side: BorderSide(color: Colors.red)
-                                ),
-                                child: Container(
-                                  height: 50,
-                                    decoration: BoxDecoration(
-                             border: Border.all(color: Color(0xffFFFFFF), width: 1),
-                             borderRadius: BorderRadius.circular(30),
+                         child: InkWell(
+                           onTap: () {
+                             sigIn();
+                           },
+                           child: Card(
+                             elevation: 5,
                              color: Color(0xffFFFFFF),
-                         ),
-                         child: Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           children: [
-                               Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  width: 40,
-                                 child: Image.asset(
-                                                             'assets/images/Group 2.png',
-                                                           ),
-                               ),
-                            Text('เข้าสู่ระบบด้วย Google',textScaleFactor: 1.0,style: textblack131),
-                            Container(
-                              margin: EdgeInsets.only(right: 30),
-                               width: 20,
-                              child: Image.asset(
-                                'assets/images/Rectangle 179.png',
-                              ),
-                            ),
-                           ],
-                         ),
+                             shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    // side: BorderSide(color: Colors.red)
+                                  ),
+                                  child: Container(
+                                    height: 50,
+                                      decoration: BoxDecoration(
+                               border: Border.all(color: Color(0xffFFFFFF), width: 1),
+                               borderRadius: BorderRadius.circular(30),
+                               color: Color(0xffFFFFFF),
+                           ),
+                           child: Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                                 Container(
+                                    margin: EdgeInsets.only(left: 20),
+                                    width: 40,
+                                   child: Image.asset(
+                                                               'assets/images/Group 2.png',
+                                                             ),
+                                 ),
+                              Text('เข้าสู่ระบบด้วย Google',textScaleFactor: 1.0,style: textblack131),
+                              Container(
+                                margin: EdgeInsets.only(right: 30),
+                                 width: 20,
+                                child: Image.asset(
+                                  'assets/images/Rectangle 179.png',
                                 ),
+                              ),
+                             ],
+                           ),
+                                  ),
+                           ),
                          ),
                        ),
                        Container(height: 5,),
@@ -249,7 +257,52 @@ bool isChecked = false;
                                                  ),
                           ),
                         ),
-                    
+                          Container(height: 5,),
+                    Platform.isIOS ?    Padding(
+                         padding: const EdgeInsets.only(right: 30,left: 30,top: 0),
+                          child: InkWell(
+                            onTap: () {
+                             
+                            },
+                            child: Card(
+                             elevation: 5,
+                             shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    
+                                    // side: BorderSide(color: Colors.red)
+                                  ),
+                                  child: Container(
+                                    height: 50,
+                                      decoration: BoxDecoration(
+                               border: Border.all(color: Color(0xffFFFFFF), width: 1),
+                               borderRadius: BorderRadius.circular(30),
+                               color: Color(0xffFFFFFF),
+                                                 ),
+                                                 child: Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                                 Container(
+                                    margin: EdgeInsets.only(left: 20),
+                                     width: 40,
+                                   child: Image.asset(
+                                                               'assets/images/Apple Login.jpg',
+                                                             ),
+                                 ),
+                              Text('เข้าสู่ระบบด้วย Apple',textScaleFactor: 1.0,style: textblack131,),
+                              Container(
+                                 margin: EdgeInsets.only(right: 30),
+                                width: 20,
+                                child: Image.asset(
+                                  'assets/images/Rectangle 179.png',
+                                ),
+                              ),
+                             ],
+                                                   ),
+                                  ),
+                                                 ),
+                          ),
+                        )
+                    : Container()
                   ]),
                 ),
                ),
@@ -263,7 +316,7 @@ bool isChecked = false;
     );
   }
 
-  Padding TextFieldlogin(String hintText, TextEditingController controller,double top1) {
+  Padding TextFieldlogin(int obscure , String hintText, TextEditingController controller,double top1) {
     return Padding(
                     padding:  EdgeInsets.only(right: 30,left: 30,top :top1),
                     child: Container(
@@ -276,6 +329,7 @@ bool isChecked = false;
                         margin: EdgeInsets.only(top: 16),
                         // width: screenW * 0.85,
                         child: TextField(
+                          obscureText: obscure == 2? true:false,
                            controller: controller,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
@@ -432,5 +486,15 @@ Map<String, dynamic>? _userData;
     });
   }
 
+
+Future sigIn()async{
+ final user = await GoogleSignInApi.login();
+
+ if(user == null){
+   print('user === > 3 $user');
+ }else{
+   print('user === > 1 $user');
+ }
+}
    
 }

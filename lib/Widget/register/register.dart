@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
 import '../../Style/style.dart';
 import '../Forgot password/forgot1.dart';
+import '../login/google_sigin_api.dart';
 import 'register1.dart';
 
 
@@ -166,41 +168,46 @@ bool isChecked = false;
                        Container(height: 10,),
                        Padding(
                          padding: const EdgeInsets.only(right: 30,left: 30,top: 0),
-                         child: Card(
-                           elevation: 5,
-                           color: Color(0xffFFFFFF),
-                           shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  // side: BorderSide(color: Colors.red)
-                                ),
-                                child: Container(
-                                  height: 50,
-                                    decoration: BoxDecoration(
-                             border: Border.all(color: Color(0xffFFFFFF), width: 1),
-                             borderRadius: BorderRadius.circular(30),
+                         child: InkWell(
+                           onTap: () {
+                             sigIn();
+                           },
+                           child: Card(
+                             elevation: 5,
                              color: Color(0xffFFFFFF),
-                         ),
-                         child: Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           children: [
-                               Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  width: 40,
-                                 child: Image.asset(
-                                                             'assets/images/Group 2.png',
-                                                           ),
-                               ),
-                            Text('เข้าสู่ระบบด้วย Google',style: textblack131),
-                            Container(
-                              margin: EdgeInsets.only(right: 30),
-                               width: 20,
-                              child: Image.asset(
-                                'assets/images/Rectangle 179.png',
-                              ),
-                            ),
-                           ],
-                         ),
+                             shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    // side: BorderSide(color: Colors.red)
+                                  ),
+                                  child: Container(
+                                    height: 50,
+                                      decoration: BoxDecoration(
+                               border: Border.all(color: Color(0xffFFFFFF), width: 1),
+                               borderRadius: BorderRadius.circular(30),
+                               color: Color(0xffFFFFFF),
+                           ),
+                           child: Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                                 Container(
+                                    margin: EdgeInsets.only(left: 20),
+                                    width: 40,
+                                   child: Image.asset(
+                                                               'assets/images/Group 2.png',
+                                                             ),
+                                 ),
+                              Text('เข้าสู่ระบบด้วย Google',style: textblack131),
+                              Container(
+                                margin: EdgeInsets.only(right: 30),
+                                 width: 20,
+                                child: Image.asset(
+                                  'assets/images/Rectangle 179.png',
                                 ),
+                              ),
+                             ],
+                           ),
+                                  ),
+                           ),
                          ),
                        ),
                        Container(height: 5,),
@@ -227,10 +234,10 @@ bool isChecked = false;
                                   margin: EdgeInsets.only(left: 20),
                                    width: 40,
                                  child: Image.asset(
-                                                             'assets/images/Group 1.png',
+                                                             'assets/images/Apple Login.jpg',
                                                            ),
                                ),
-                            Text('เข้าสู่ระบบด้วย Facebook',style: textblack131,),
+                            Text('เข้าสู่ระบบด้วย Apple ',style: textblack131,),
                             Container(
                                margin: EdgeInsets.only(right: 30),
                               width: 20,
@@ -243,7 +250,47 @@ bool isChecked = false;
                                 ),
                                                ),
                         ),
-                    
+                      Container(height: 5,),
+                    Platform.isIOS ?    Padding(
+                         padding: const EdgeInsets.only(right: 30,left: 30,top: 0),
+                          child: Card(
+                           elevation: 5,
+                           shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  
+                                  // side: BorderSide(color: Colors.red)
+                                ),
+                                child: Container(
+                                  height: 50,
+                                    decoration: BoxDecoration(
+                             border: Border.all(color: Color(0xffFFFFFF), width: 1),
+                             borderRadius: BorderRadius.circular(30),
+                             color: Color(0xffFFFFFF),
+                                               ),
+                                               child: Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                               Container(
+                                  margin: EdgeInsets.only(left: 20),
+                                   width: 40,
+                                 child: Image.asset(
+                                                             'assets/images/Group 1.png',
+                                                           ),
+                               ),
+                            Text('เข้าสู่ระบบด้วย Apple ',style: textblack131,),
+                            Container(
+                               margin: EdgeInsets.only(right: 30),
+                              width: 20,
+                              child: Image.asset(
+                                'assets/images/Rectangle 179.png',
+                              ),
+                            ),
+                           ],
+                         ),
+                                ),
+                                               ),
+                        )
+                    : Container()
                   ]),
                 ),
                ),
@@ -296,4 +343,26 @@ bool isChecked = false;
                       ),
                   );
   }
+
+
+
+  Future sigIn()async{
+ final user = await GoogleSignInApi.login();
+
+ if(user == null){
+   print('user === > 3 $user');
+ }else{
+ 
+  Map<String,dynamic> User = {
+                                'username':'${user.displayName}',
+                                 'email':'${user.email}',
+                                  'password':'${user.id}',
+                                   'phone':'',
+                                   'app':'google',
+                              };
+                               MaterialPageRoute route = MaterialPageRoute(
+                                  builder: (context) => register1(User:User));
+                              Navigator.push(context, route);
+ }
+}
 }

@@ -162,12 +162,56 @@ late  List<dynamic> product_users = [];
     print('e ===>2 ${e.toString()} ');
   }
 }
+
+
+String img = '', logo = '';
+Future<void> show_user() async {
+  try {
+  
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+   String user_id = preferences.getString('id').toString();
+   logo = preferences.getString('logo').toString();
+    var uri = Uri.parse('${MyConstant().domain}/show_user');
+    var ressum = await http.post(uri,
+        // headers: {
+        //   // "Content-Type": "application/json",
+        // },
+        body: {
+           'id_user': user_id
+        });
+    if (ressum.statusCode == 200) {
+      var lnformation = jsonDecode(ressum.body);
+      setState(() {
+        img = lnformation['data']['data'][0]['path'];
+        print(img);
+      // for (var data in lnformation['data']) {
+      //   mergedData.addAll(data[0]);
+      // }
+          //  List<dynamic> combinedData = lnformation['data'].expand((element) => element).toList();
+
+    
+      // product_users == product_userss;
+
+      });
+    } else {
+      setState(() {
+       
+      });
+      // loading = false;
+      // var lnformation = jsonDecode(ressum.body);
+      // print('product_users=== $lnformation');
+    }
+  } catch (e) {
+    print('e ===>2 ${e.toString()} ');
+  }
+}
    
 
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    show_user();
     product_user();
      show_history();
   }
@@ -216,9 +260,14 @@ late  List<dynamic> product_users = [];
                                 child: Container(
                                   height: 40,
                                   width: 40,
-                                  child: Image.asset(
+                                  child:'$img' == 'null'||'$img' == ''?  logo == '' || logo == 'null' ?Image.asset(
                                         'assets/home/Rectangle 17.png',
-                                      ),
+                                      ):ClipRRect(  borderRadius: BorderRadius.circular(50),child: Image.network(logo))
+                                  :ClipRRect(borderRadius: BorderRadius.circular(50),
+                                    child: Image.network(
+                                          '${MyConstant().domain2}/$img',
+                                        ),
+                                  ),
                                 ),
                               ),
                             ),

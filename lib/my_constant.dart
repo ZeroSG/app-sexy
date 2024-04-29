@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MyConstant {
   //Demo
   String domain = 'https://universe-exogroupfood.com/api';
-   String domain2 = 'https://universe-exogroupfood.com/sexy/public/';
+   String domain2 = 'https://universe-exogroupfood.com/public/';
   // String pathImage = 'http://dee.orangeworkshop.info/wilsonart_demo/images';
 
   MyConstant();

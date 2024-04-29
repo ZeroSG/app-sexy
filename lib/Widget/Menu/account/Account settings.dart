@@ -28,6 +28,7 @@ class _Account_SettingsState extends State<Account_Settings> {
   late TextEditingController _birthday = TextEditingController();
    
    String name = '';
+   String img = '';
    bool loading = true;
    late  Map<String,dynamic> _genders ={
      'id': 0,
@@ -56,6 +57,7 @@ late  Map<String,dynamic> users;
       setState(() {
 
         users = lnformation['data']['data'][0];
+          img = users['path'].toString();
         _name.text = users['name'].toString();
         _phone.text = users['phone'].toString();
         _email.text = users['email'].toString();
@@ -201,7 +203,7 @@ show_user();
                   children: [
                  
                              
-                   Image.asset(
+                  Image.asset(
                       'assets/images/Back-Profile.png',
                       height: 127,
                       width: screenW * 1,
@@ -212,7 +214,7 @@ show_user();
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                       fileimg == null ?  Container(
+                       fileimg == null ?    Container(
                           margin: EdgeInsets.only(top: 10, bottom: 10),
                           decoration: BoxDecoration(
                             //  borderRadius: BorderRadius.circular(10),
@@ -222,14 +224,22 @@ show_user();
                               fit: BoxFit.fill,
                             ),
                           ),
-                          child: Padding(
+                          child: img == ''?  Padding(
                             padding: const EdgeInsets.all(15.0),
-                            child: Image.asset(
+                            child:Image.asset(
                               'assets/images/Rectangle 17_2.png',
                               height: 26,
-                            ),
-                          ),
-                        ):Container(
+                            )
+                          ):ClipRRect(borderRadius: BorderRadius.circular(50),
+                                    child: Image.network(
+                                          '${MyConstant().domain2}/$img',
+                                           height: 70,
+                                           width: 70,
+                                            fit: BoxFit.fill,
+                                        ),
+                                  ),
+                        )
+                        :Container(
                           margin: EdgeInsets.only(top: 10, bottom: 10),
                        
                           child: Container(

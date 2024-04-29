@@ -1074,7 +1074,8 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                                          margin: EdgeInsets.only(left: 10),
                                                          child: Image.network(
                                             '${MyConstant().domain2}/upload/promotion/${show_promotions[index]['path']}',
-                                                         height: 70,),
+                                                         height: 70,
+                                                         width: 100,),
                                                        ),
                                                    
                                                     Expanded(
@@ -2409,6 +2410,14 @@ String result7 = falseNOProductIds7.join(',');
             response.fields['id_cart'] =  '$result4';
               response.fields['rate_amount'] =  '${widget.totalAmount}';
                 response.fields['rate_product'] =  '$result5';
+                for(var i in products3!){
+           if(i['show_delivery'] != null){
+             if(i['show_delivery']['name'] == "พรีออเดอร์"){
+               response.fields['lenght_preorder'] =  '$TN_2';
+             }   
+           }
+          }  
+                 
             
  
       var res = await response.send();

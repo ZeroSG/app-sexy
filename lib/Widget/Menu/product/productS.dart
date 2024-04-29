@@ -196,7 +196,7 @@ late  List<dynamic> data2 = [];
                       children: [
                         Container(
                           height: 150,
-                          color:datas!['path_img'].toString().split('.').first == 'jpg'? Color(0xffD34739):Color.fromARGB(255, 255, 255, 255),
+                          color:datas!['path_img'].toString().split('.').first != 'jpg'? Color(0xffD34739):Color.fromARGB(255, 255, 255, 255),
                         ),
                         ClipRRect(
                           borderRadius: BorderRadius.only(
@@ -213,8 +213,10 @@ late  List<dynamic> data2 = [];
                          
                         )
                         :Container(
+                          color: Colors.black,
                           child: Image.network(
                           '${MyConstant().domain2}/${datas!['path_img']}',
+                          width: 225,
                           ),
                         )
                       ],
