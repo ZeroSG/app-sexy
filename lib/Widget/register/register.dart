@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../Style/style.dart';
 import '../Forgot password/forgot1.dart';
@@ -250,47 +251,28 @@ bool isChecked = false;
                                 ),
                                                ),
                         ),
-                      Container(height: 5,),
+                     Container(height: 5,),
                     Platform.isIOS ?    Padding(
                          padding: const EdgeInsets.only(right: 30,left: 30,top: 0),
-                          child: Card(
-                           elevation: 5,
-                           shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  
-                                  // side: BorderSide(color: Colors.red)
-                                ),
-                                child: Container(
-                                  height: 50,
-                                    decoration: BoxDecoration(
-                             border: Border.all(color: Color(0xffFFFFFF), width: 1),
-                             borderRadius: BorderRadius.circular(30),
-                             color: Color(0xffFFFFFF),
-                                               ),
-                                               child: Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           children: [
-                               Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                   width: 40,
-                                 child: Image.asset(
-                                                             'assets/images/Group 1.png',
-                                                           ),
-                               ),
-                            Text('เข้าสู่ระบบด้วย Apple ',style: textblack131,),
-                            Container(
-                               margin: EdgeInsets.only(right: 30),
-                              width: 20,
-                              child: Image.asset(
-                                'assets/images/Rectangle 179.png',
-                              ),
-                            ),
-                           ],
-                         ),
-                                ),
-                                               ),
+                          child: SignInWithAppleButton(
+                            borderRadius :BorderRadius.all(Radius.circular(30.0)),
+  onPressed: () async {
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    print(credential);
+
+    // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
+    // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+  },
+),
                         )
-                    : Container()
+                    : Container(),
+                     Container(height: 5,),
                   ]),
                 ),
                ),

@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home_Start.dart';
+import 'Widget/login/Receive_the_product.dart';
 import 'my_constant.dart';
 
 class IntroHome extends StatefulWidget {
@@ -38,9 +41,20 @@ class _IntroHomeState extends State<IntroHome> {
         setState(() {
          logo  =lnformation['data']['data'][0]['path'].toString();
           loading = false;
-         Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushAndRemoveUntil(context,
+         Future.delayed(const Duration(seconds: 3), () async{
+           SharedPreferences preferences = await SharedPreferences.getInstance();
+
+     usernamelogin = preferences.getString('usernamelogin').toString();
+      password = preferences.getString('password').toString();
+      if(usernamelogin == ''||password == ''||usernamelogin == 'null'||password == 'null'){
+        Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) => Home_Start()), (route) => false);
+      }else{
+        print(usernamelogin);
+         print(password);
+          login(usernamelogin,password);
+      }
+     
     });
         
                 
@@ -58,6 +72,8 @@ class _IntroHomeState extends State<IntroHome> {
       print('e ===>1 ${e.toString()} ');
     }
   }
+  String usernamelogin = '';
+  String password = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,5 +143,65 @@ class _IntroHomeState extends State<IntroHome> {
       //   ],
       // ),
     );
+  }
+
+
+   Future<void> login(var Username,var password) async {
+    try {
+      EasyLoading.show(status: 'กำลังตรวจสอบข้อมูล');
+      var uri = Uri.parse('${MyConstant().domain}/login');
+       var ressum = await http.post(uri,
+       body: {
+         "email": Username,
+         "password": password,  
+       }
+            );
+               print('12345===>${ressum.statusCode}');   
+      if(ressum.statusCode == 200) {
+       EasyLoading.showSuccess('เข้าสู่ระบบ').then((value)async {
+        var result11 = jsonDecode(ressum.body);
+         
+         
+      setState(() {
+        late Map<String, dynamic> calendarData;
+        calendarData = result11['data'];
+        String? token = '${result11['token_type']} ${result11['access_token']}';
+        //  DataUser Data_User =
+        //       DataUser.fromJson(result11["user"][0]);
+              routToService(calendarData,token);
+      });
+       });
+    }else {
+      EasyLoading.showError(jsonDecode(ressum.body)['message'].toString());
+      print(jsonDecode(ressum.body)) ;  
+    }
+    } catch (e) {
+      print('e ===> ${e.toString()} ');
+    }
+  }
+
+
+   Future routToService(var Data_User,var access_token) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('id', Data_User['id'].toString());
+    preferences.setString('name', Data_User['name'].toString());
+    preferences.setString('email', Data_User['email'].toString());
+    preferences.setString('phone', Data_User['phone'].toString());
+    preferences.setString('path', Data_User['path'].toString());
+    preferences.setString('phone', Data_User['phone'].toString());
+    preferences.setString('email', Data_User['email'].toString());
+    preferences.setString('birthday', Data_User['birthday'].toString());
+    preferences.setString('gender', Data_User['gender'].toString());
+    preferences.setString('age', Data_User['age'].toString());
+      preferences.setString('access_token', access_token.toString());
+      
+    preferences.setString('usernamelogin', usernamelogin);
+    preferences.setString('password', password);
+  
+         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                         builder: (context)=>    Receive_the_product(),), (route) => true);
+  //  MaterialPageRoute route =
+  //       MaterialPageRoute(builder: (context) => Menu(Data_User:Data_User,index: 0,));
+  //   Navigator.pushAndRemoveUntil(context, route, (route) => false);
   }
 }

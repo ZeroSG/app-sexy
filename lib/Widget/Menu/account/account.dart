@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../Home_Start.dart';
 import '../../../my_constant.dart';
 import '../product/productS.dart';
 import 'Account settings.dart';
@@ -11,6 +12,8 @@ import 'Set_up.dart';
 import 'buy_again.dart';
 import 'order.dart';
 import 'package:http/http.dart' as http;
+
+import 'questionnaire.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -699,12 +702,13 @@ Future<void> show_user() async {
                                  }
                          },),   
                        Line('icons8-user-100 (1) 4.png','แบบสอบถาม',() async{
-                            //  Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
-                            //              builder: (_) =>Account_Settings() ),);
-                            //      if (navigationResult != null ) {
+                             Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
+                                         builder: (_) =>Questionnaire() ),);
+                                 if (navigationResult != null ) {
 
-                            //      }
-                         },),           
+                                 }
+                         },),  
+                          clear(),          
                    ],
                  ),
                ),
@@ -737,6 +741,55 @@ Future<void> show_user() async {
                                      ),
                                      Container(
                                        child: Text('$name',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 12,fontWeight: FontWeight.w400),),
+                                     ),
+                                   ],
+                                 
+                               
+                              
+                             ),
+                               Container(
+                                   
+                                       child: Image.asset('assets/images/Line 5.png',
+                                       height: 18,),)
+                           ],
+                         ),
+                       ),
+                     );
+  }
+
+
+  
+  Container clear() {
+    return Container(
+                      margin: EdgeInsets.only(top: 10,bottom: 30),
+                       child: InkWell(
+                         onTap: () async{
+                            SharedPreferences preferences = await SharedPreferences.getInstance();
+                             preferences.clear();
+                           MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => Home_Start(),
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
+                         },
+                         child: Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                             Row(
+                               mainAxisAlignment: MainAxisAlignment.start,
+                               crossAxisAlignment: CrossAxisAlignment.center,
+                               children: [
+                               
+                                     Container(
+                                       margin: EdgeInsets.only(right: 10),
+                                       child: Icon(
+              Icons.logout_rounded,
+              size: 20.0,
+              color: Color(0xffBA1F23),
+            )
+                                     ),
+                                     Container(
+                                       child: Text('ออกจากระบบ',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 12,fontWeight: FontWeight.w400),),
                                      ),
                                    ],
                                  
