@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../Home_Start.dart';
 import '../../../my_constant.dart';
 import '../../register/register4.dart';
 import '../menu.dart';
@@ -224,7 +225,7 @@ show_user();
                               fit: BoxFit.fill,
                             ),
                           ),
-                          child: img == ''?  Padding(
+                          child: img == ''|| img == 'null'?  Padding(
                             padding: const EdgeInsets.all(15.0),
                             child:Image.asset(
                               'assets/images/Rectangle 17_2.png',
@@ -662,7 +663,7 @@ show_user();
                 ),
               ),
                Container(
-                 margin: EdgeInsets.only(top: 0,bottom: 10,right: 10,left: 10),
+                 margin: EdgeInsets.only(top: 0,bottom: 0,right: 10,left: 10),
                  child: GestureDetector(onTap: () {
                              
                           createWo();
@@ -683,6 +684,41 @@ show_user();
                       children: [
                      
                         Text('ยืนยัน', textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  
+                          
+                          fontSize: 12,
+                          color: Color.fromARGB(255, 255, 255, 255)),
+                              ),
+                      ],
+                    ),
+                  ),
+                             ),
+                           )),
+               ),
+
+               Container(
+                 margin: EdgeInsets.only(top: 0,bottom: 10,right: 10,left: 10),
+                 child: GestureDetector(onTap: () {
+                             
+                         delete_account();
+               
+                           }, child: Container(
+                  decoration: BoxDecoration(
+                   color: Color.fromARGB(255, 255, 0, 0),
+                  borderRadius: BorderRadius.circular(15),
+                 ),
+                             margin: EdgeInsets.only(right: 5,left: 5,top: 20),
+                             //  height: 60,
+                             //  width: 100,
+                             child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                     
+                        Text('ลบข้อมูล', textScaleFactor: 1.0,
                                 style: TextStyle(
                                   
                           
@@ -968,6 +1004,48 @@ show_user();
       if (res.statusCode == 200) {
         EasyLoading.showSuccess('บันทึกข้อมูลสำเร็จ').then((value)async {
             routToService();
+        });
+      } else {
+        var response = await http.Response.fromStream(res);
+        var jsonResponse =
+            await jsonDecode(response.body) as Map<String, dynamic>;
+        printWrapped(jsonResponse['message'].toString());
+        EasyLoading.showError(jsonResponse['message'].toString());
+      }
+    } catch (error) {
+      printWrapped(error.toString());
+      EasyLoading.showError(error.toString());
+    }
+
+   
+  }
+
+
+
+
+  Future delete_account() async {
+    try {
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String user_id = preferences.getString('id').toString();
+
+      var url = Uri.parse('${MyConstant().domain}/delete_account');
+      EasyLoading.show(status: 'กำลังลบข้อมูล');
+
+      
+      var response = await http.MultipartRequest('POST', url);
+      response.fields['id'] =  user_id;
+
+      var res = await response.send();
+      print(res.statusCode);
+      // print(jsonDecode(response!.body));
+      if (res.statusCode == 200) {
+        EasyLoading.showSuccess('ลบข้อมูลสำเร็จ').then((value)async {
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+                             preferences.clear();
+                           MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => Home_Start(),
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
         });
       } else {
         var response = await http.Response.fromStream(res);

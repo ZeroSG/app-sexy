@@ -156,6 +156,8 @@ class _IntroHomeState extends State<IntroHome> {
          "password": password,  
        }
             );
+             print('12345===>${Username}');   
+              print('12345===>${password}');   
                print('12345===>${ressum.statusCode}');   
       if(ressum.statusCode == 200) {
        EasyLoading.showSuccess('เข้าสู่ระบบ').then((value)async {

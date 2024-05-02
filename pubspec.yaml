@@ -58,6 +58,8 @@ dependencies:
   google_sign_in: ^6.1.6
   sign_in_with_apple: ^5.0.0
   uni_links: ^0.5.1
+
+  flutter_launcher_icons: ^0.13.1
  
 dev_dependencies:
   flutter_test:
@@ -69,7 +71,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+flutter_icons:
+  image_path: "assets/images/Rectangle 17.png"
+  # image_path_android:"assets/images/playstore.png"
+  # image_path_ios:"images/specify_ios.png"
+  android: true
+  ios: true
   
 
 # For information on the generic Dart part of this file, see the

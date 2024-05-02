@@ -277,14 +277,16 @@ Future<void> show_user() async {
 
 
                         
-                                       Container(
-                                         margin: EdgeInsets.only(top: 20),
-                                         child: Text('Name $name',textScaleFactor: 1.0,style: TextStyle(
-              // fontFamily: 'IBM',
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Color(0xffFFFFFF),
-            ),),
+                                       Expanded(
+                                         child: Container(
+                                           margin: EdgeInsets.only(top: 20),
+                                           child: Text('Name : $name',textScaleFactor: 1.0,style: TextStyle(
+                                                     // fontFamily: 'IBM',
+                                                     fontSize: 14,
+                                                     fontWeight: FontWeight.w600,
+                                                     color: Color(0xffFFFFFF),
+                                                   ),),
+                                         ),
                                        ),
                                      
                                     
@@ -303,7 +305,7 @@ Future<void> show_user() async {
                                            shape: BoxShape.circle,
                                          ),
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 10,top: 20),
+                                  padding: const EdgeInsets.only(left: 10,top: 20,right: 30),
                                   child: Container(
                                     height: 20,
                                     width: 20,

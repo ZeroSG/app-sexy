@@ -61,6 +61,24 @@
           </array>
         </dict>
       </array>
+
+
+	  <!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
+<!-- Google Sign-in Section -->
+<key>CFBundleURLTypes</key>
+<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<!-- TODO Replace this value: -->
+			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+			<string>com.googleusercontent.apps.205910569949-ol4maa0d88cfjdm15g46h326kl4tt6jb</string>
+		</array>
+	</dict>
+</array>
+<!-- End of the Google Sign-in Section -->
 	  
 </dict>
 </plist>

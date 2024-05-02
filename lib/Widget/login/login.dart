@@ -476,7 +476,7 @@ Future sigIn()async{
  if(user == null){
    print('user === > 3 $user');
  }else{
-   print('user === > 1 $user');
+  login(user.email.toString(),user.id.toString());
  }
 }
    
