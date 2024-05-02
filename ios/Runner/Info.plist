@@ -45,6 +45,19 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+
+	<key>NSCameraUsageDescription</key>
+	<string>To choose user profile image</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Use find current location for user</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>use calculate location distance</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used to capture audio for image picker plugin</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need to manage gallery and profile image for users</string>
+
+	
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
@@ -79,6 +92,9 @@
 	</dict>
 </array>
 <!-- End of the Google Sign-in Section -->
-	  
+<key>GIDClientID</key>
+<!-- TODO Replace this value: -->
+<!-- Copied from GoogleService-Info.plist key CLIENT_ID -->
+<string>205910569949-ol4maa0d88cfjdm15g46h326kl4tt6jb.apps.googleusercontent.com</string>	  
 </dict>
 </plist>
