@@ -64,8 +64,12 @@ late List<dynamic>? products3 = widget.products3;
   }
 
        late String result = id_cart2.join(',');
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/calculate_gram');
-       var ressum = await http.post(uri,body: {
+       var ressum = await http.post(uri,headers: {
+       "Authorization":access_token
+      },body: {
          'id':result.toString()
        }
             );
@@ -89,7 +93,7 @@ late List<dynamic>? products3 = widget.products3;
     show_promotion();
     }
     } catch (e) {
-      print('e ===>1 ${e.toString()} ');
+      print('e ===>1 11${e.toString()} ');
     }
   }
 
@@ -98,8 +102,13 @@ Future<void> show_promotion() async {
       setState(() {
         loading = true;
       });
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_promotion');
-       var ressum = await http.get(uri
+       var ressum = await http.get(uri,
+       headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -121,7 +130,7 @@ Future<void> show_promotion() async {
      show_address();
     }
     } catch (e) {
-      print('e ===>1 ${e.toString()} ');
+      print('e ===>1 55${e.toString()} ');
     }
   }
 
@@ -133,14 +142,19 @@ Future<void> show_promotion() async {
         loading = true;
         Sumdelivery = 0;
       });
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_delivery');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'gram':'$gram',
          'provice':'${show_addressss!['province']}'
        }
             );
-           print('lnformation===>${ressum.statusCode}');       
+           print('lnformation===>${ressum.statusCode}');        
       if(ressum.statusCode == 200){
           var  lnformation  = jsonDecode(ressum.body);
 
@@ -230,7 +244,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
       //  data_promotion_stores();
     }
     } catch (e) {
-      print('e ===>1 ${e.toString()} ');
+      print('e ===>1 44${e.toString()} ');
     }
   }
 
@@ -240,6 +254,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
   Future<void> show_address() async {
     try {
         SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       setState(() {
         loading = true;
         id_warehousecode = preferences.getString('id_warehousecode').toString();
@@ -249,6 +264,9 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
      
       var uri = Uri.parse('${MyConstant().domain}/show_address');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id
        }
@@ -258,15 +276,29 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
           var  lnformation  = jsonDecode(ressum.body);
 
         setState(() {
-        
-         show_addresss  =lnformation['data']['data'];
+            show_addresss  =lnformation['data']['data'];
+        if(show_addresss.length > 0){
+           int i2 = 0;
          for(int i = 0;i< show_addresss.length;i++){
            if(show_addresss[i]['status'] == 'active'){
              show_addressss = show_addresss[i];
              show_addressint =  show_addresss[i]['id'];
+             i2 = 1;
+           }else{
+             if(i == show_addresss.length-1 && i2 == 0){
+                 show_addressss = show_addresss[0];
+             show_addressint =  show_addresss[0]['id'];
+             }   
            }
          }
           show_tax_address();
+        }else{
+          EasyLoading.showError('กรุณาเพิ่มที่อยู่จัดส่ง');
+  
+           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                         builder: (context)=>    Menu(),), (route) => true);
+        }
+        
                  
  
        
@@ -278,7 +310,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
       //  data_promotion_stores();
     }
     } catch (e) {
-      print('e ===>1 ${e.toString()} ');
+      print('e ===>1 33${e.toString()} ');
     }
   }
 
@@ -292,9 +324,13 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
         loading = true;
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_tax_address');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id
        }
@@ -324,7 +360,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
       //  data_promotion_stores();
     }
     } catch (e) {
-      print('e ===>1 ${e.toString()} ');
+      print('e ===>1 22${e.toString()} ');
     }
   }
   @override
@@ -507,7 +543,8 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                                                                                                                 margin: EdgeInsets.only(left: 10),
                                                                                                                                 child: Image.network(
                                                                                                                     '${MyConstant().domain2}/${products3![index1]['data'][index]['image_path']}',
-                                                                                                                                height: 70,),
+                                                                                                                                  height: 80,
+                                                                                                                      width: 80,),
                                                                                                                               ),
                                                                                                                           
                                                                                                                            Expanded(
@@ -591,7 +628,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                             ),
                                             context: context,
                                             builder: (ctx) => _buildBottomSheet3(
-                                                ctx,index1));
+                                                ctx,index1,products3![index1]['name']));
                                         },
                                     child: Container(
                                                                margin: EdgeInsets.only(left: 10),
@@ -752,9 +789,9 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
               ),
                Container(
                 
-                  child: show_promotionss == null? Text('${int.parse('${widget.Sum}')-Sumdelivery} ฿',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffBD2325), fontSize: 16,fontWeight: FontWeight.w600),)
-                  : show_promotionss!['discount_percent'] == null? Text('${int.parse('${widget.Sum}')-Sumdelivery-int.parse('${show_promotionss!['discount_bath']}')} ฿',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffBD2325), fontSize: 16,fontWeight: FontWeight.w600),)
-                  :Text('${int.parse('${widget.Sum}')-Sumdelivery-((int.parse('${show_promotionss!['discount_percent']}')/100) * int.parse('${widget.Sum}'))} ฿',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffBD2325), fontSize: 16,fontWeight: FontWeight.w600),),
+                  child: show_promotionss == null? Text('${int.parse('${widget.Sum}')+Sumdelivery} ฿',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffBD2325), fontSize: 16,fontWeight: FontWeight.w600),)
+                  : show_promotionss!['discount_percent'] == null? Text('${int.parse('${widget.Sum}')+Sumdelivery-int.parse('${show_promotionss!['discount_bath']}')} ฿',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffBD2325), fontSize: 16,fontWeight: FontWeight.w600),)
+                  :Text('${int.parse('${widget.Sum}')+Sumdelivery-((int.parse('${show_promotionss!['discount_percent']}')/100) * int.parse('${widget.Sum}'))} ฿',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffBD2325), fontSize: 16,fontWeight: FontWeight.w600),),
               ),
                  ],
                ),
@@ -1439,7 +1476,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
 
  TextEditingController _dateController2  = TextEditingController();
    StatefulBuilder _buildBottomSheet3(
-      BuildContext context,int index ) {
+      BuildContext context,int index, var name ) {
         Map<String, dynamic>? show_deliveryss2 = products3![index]['show_delivery'];
         int? S32 = products3![index]['S3'];
         String? TN2 = TN;
@@ -1473,13 +1510,201 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                                                           shrinkWrap: true,
                                                                           itemCount: show_deliverys.length,
                                                  itemBuilder: (context, index)  {
-                   return show_deliverys[index]['name'] != 'รับหน้าร้าน' ? show_deliverys[index]['name'] == 'พรีออเดอร์'?
-                   Container(
-                      margin: EdgeInsets.only(top: 10),
-                     child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                         Row(
+                                                   if(name.toString() != 'สินค้าพรีออเดอร์'){
+                                                    return show_deliverys[index]['name']== "พรีออเดอร์"? Container()
+                                                    :Container(
+                                                       margin: EdgeInsets.only(top: 10),
+                     
+                      
+                                                      child: Column(
+                                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                                         children: [
+                                                        Row(
+                           children: [
+                             Expanded(
+                               child: Container(
+                                    //  margin: EdgeInsets.only(top: 10),
+                                     child: Text('${show_deliverys[index]['name']}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                   ),
+                             ),
+
+                               Row(
+                                 children: [
+                                  Container(
+                                    //  margin: EdgeInsets.only(top: 10),
+                                     child: Text('${show_deliverys[index]['price']} ฿',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                   ),
+                                   GestureDetector(
+                                                                onTap: () {
+                                                                  setState1(() {
+                                                                    if(S32 == show_deliverys[index]['id']){
+                                                                     setState((){
+                                                                         show_deliveryss2 = null;
+                                                                      S32 = -1;
+                                                                     });
+                                                                      
+                                                                    }else{
+                                                                        setState((){
+                                                                         show_deliveryss2 = show_deliverys[index];
+                                                                       S32 = show_deliverys[index]['id'];
+                                                                     });
+                                                                      
+                                                                    }
+                                                                    print(show_deliveryss2);
+                                                                  });
+                                                                },
+                                                                child: Container(
+                                                                  margin: EdgeInsets.only(
+                                                                      left: 5),
+                                                                  child: S32 == show_deliverys[index]['id']
+                                                                      ? Container(
+                                                                          height: 27,
+                                                                          // margin: EdgeInsets.only(top: 10, bottom: 10),
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            //  borderRadius: BorderRadius.circular(10),
+                                                                            image:
+                                                                                new DecorationImage(
+                                                                              image: new AssetImage(
+                                                                                  'assets/images/Ellipse 35.png'),
+                                                                              // fit: BoxFit.fill,
+                                                                            ),
+                                                                          ),
+                                                                          child: Padding(
+                                                                            padding:
+                                                                                const EdgeInsets
+                                                                                    .all(5.0),
+                                                                            child:
+                                                                                Image.asset(
+                                                                              'assets/images/Rectangle 153.png',
+                                                                              height: 20,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      : Image.asset(
+                                                                          'assets/images/Ellipse 36.png',
+                                                                          height: 25,
+                                                                        ),
+                                                                ),
+                                                              ),
+                                 ],
+                               ),
+                               
+                           ],
+                         ),
+                       '${show_deliverys[index]['detail']}'== 'null' ? Container()
+                       : Container(
+                                    //  margin: EdgeInsets.only(top: 10),
+                                     child: Text('${show_deliverys[index]['detail']}',style: TextStyle(fontSize: 13,fontWeight: FontWeight.w400,color: Color(0xff9A9696)),),
+                                   ),
+                                  id_warehousecode.toString() != '${show_deliverys[index]['id']}' ?
+                       show_deliverys[index]['name'] == 'พรีออเดอร์' ? Container()
+                       :Container(
+                                    //  margin: EdgeInsets.only(top: 10),
+                                     child: Text('*ปัจจุบันอยู่ สถานะ $name_warehousecode ถ้ากดตกลงจะหลับหน้าหลัก และ รีเซ็ต',style: TextStyle(fontSize: 13,fontWeight: FontWeight.w400,color: Colors.red),),
+                                   ):Container(),
+                   show_deliverys[index]['name'] == 'จัดส่งแช่แข็งธรรมดา' ? Container()
+                   : Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                       Container(
+                               margin: EdgeInsets.only(top: 10),
+                               child: Text('วันที่',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                             ),
+                              Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            onTap: () {
+                              chooseDate1();
+                            },
+                            readOnly: true,
+                            controller: _dateController2,
+                            keyboardType: TextInputType.number,
+                            textCapitalization: TextCapitalization.words,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'วันเดือนปี',
+                              // labelStyle: b2,
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                            ),
+                          ),
+                        ),
+                         Container(
+                               margin: EdgeInsets.only(top: 10),
+                               child: Text('เวลา',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                             ),
+
+                  
+                             Container(
+                               margin: EdgeInsets.only(top: 10),
+                               height: 40,
+                               child: ListView.builder(
+                                                         physics: BouncingScrollPhysics(),
+                                                         scrollDirection: Axis.horizontal,
+                                                                                shrinkWrap: true,
+                                                                                itemCount: T.length,
+                                                       itemBuilder: (context, index1)  {
+                                    return GestureDetector(
+                                      onTap: () {
+                                          setState1(() {
+                                             setState(() {
+                                                                if(TN2 ==  T[index1].toString()){
+                                                                  
+                                                                  TN2 = '00:00';
+                                                                }else{
+                                                                   TN2 = T[index1].toString();
+                                                                }
+                                                                
+                                                                // print(TN);
+                                                                // Navigator.pop(context);
+                                                              });});
+                                      },
+                                      child: Container(
+                                                            margin: EdgeInsets.only(right: 10),
+                                                            decoration: BoxDecoration(
+                                                              color:  TN2 == T[index1].toString() ? Color(0xffFAAB35):Color.fromARGB(255, 255, 255, 255) ,
+                                                              border: Border.all(
+                                                            color: TN2 == T[index1].toString() ? Color(0xffFAAB35):Color(0xffFAAB35) ,
+                                                            width: 1),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(50),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.only(right: 10,left: 10,top: 5,bottom: 5),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  '${T[index1]}',
+                                                                  textScaleFactor: 1.0,
+                                                                  style: TextStyle(
+                                                                    // fontFamily: 'IBM',
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    color:  TN2 == T[index1].toString() ? Color.fromARGB(255, 255, 255, 255):Color(0xffFAAB35)
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                    );
+                                  }
+                                ),
+                             ),
+                     ],
+                   ),
+                                   
+                                                      ]),
+                                                    );
+                                                   }else{
+                                                      return show_deliverys[index]['name']!= "พรีออเดอร์"? Container()
+                                                    :Container(
+                                                       margin: EdgeInsets.only(top: 10),
+                     
+                      
+                                                      child: Column(
+                                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                                         children: [
+                                                        Row(
                            children: [
                              Expanded(
                                child: Container(
@@ -1556,7 +1781,8 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                     //  margin: EdgeInsets.only(top: 10),
                                      child: Text('${show_deliverys[index]['detail']}',style: TextStyle(fontSize: 13,fontWeight: FontWeight.w400,color: Color(0xff9A9696)),),
                                    ),
-                      Container(
+
+                          Container(
                            margin: EdgeInsets.only(top: 10),
                            height: 40,
                            child: ListView.builder(
@@ -1609,268 +1835,11 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                 );
                               }
                             ),
-                         ),
-                    
-                       ],
-                     ),
-                   )
-                  : Container(
-                      margin: EdgeInsets.only(top: 10),
-                     child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                         Row(
-                           children: [
-                             Expanded(
-                               child: Container(
-                                    //  margin: EdgeInsets.only(top: 10),
-                                     child: Text('${show_deliverys[index]['name']}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                                   ),
-                             ),
-
-                               Row(
-                                 children: [
-                                  Container(
-                                    //  margin: EdgeInsets.only(top: 10),
-                                     child: Text('${show_deliverys[index]['price']} ฿',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                                   ),
-                                   GestureDetector(
-                                                                onTap: () {
-                                                                  setState1(() {
-                                                                    if(S32 == show_deliverys[index]['id']){
-                                                                     setState((){
-                                                                         show_deliveryss2 = null;
-                                                                      S32 = -1;
-                                                                     });
-                                                                      
-                                                                    }else{
-                                                                        setState((){
-                                                                         show_deliveryss2 = show_deliverys[index];
-                                                                       S32 = show_deliverys[index]['id'];
-                                                                     });
-                                                                      
-                                                                    }
-                                                                    print(show_deliveryss2);
-                                                                  });
-                                                                },
-                                                                child: Container(
-                                                                  margin: EdgeInsets.only(
-                                                                      left: 5),
-                                                                  child: S32 == show_deliverys[index]['id']
-                                                                      ? Container(
-                                                                          height: 27,
-                                                                          // margin: EdgeInsets.only(top: 10, bottom: 10),
-                                                                          decoration:
-                                                                              BoxDecoration(
-                                                                            //  borderRadius: BorderRadius.circular(10),
-                                                                            image:
-                                                                                new DecorationImage(
-                                                                              image: new AssetImage(
-                                                                                  'assets/images/Ellipse 35.png'),
-                                                                              // fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                          child: Padding(
-                                                                            padding:
-                                                                                const EdgeInsets
-                                                                                    .all(5.0),
-                                                                            child:
-                                                                                Image.asset(
-                                                                              'assets/images/Rectangle 153.png',
-                                                                              height: 20,
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      : Image.asset(
-                                                                          'assets/images/Ellipse 36.png',
-                                                                          height: 25,
-                                                                        ),
-                                                                ),
-                                                              ),
-                                 ],
-                               ),
-                               
-                           ],
-                         ),
-                         Container(
-                                    //  margin: EdgeInsets.only(top: 10),
-                                     child: Text('${show_deliverys[index]['detail']}',style: TextStyle(fontSize: 13,fontWeight: FontWeight.w400,color: Color(0xff9A9696)),),
-                                   ),
-                      
-                     id_warehousecode.toString() != '${show_deliverys[index]['id']}' ?
-                       show_deliverys[index]['name'] == 'พรีออเดอร์' ? Container()
-                       :Container(
-                                    //  margin: EdgeInsets.only(top: 10),
-                                     child: Text('*ปัจจุบันอยู่ สถานะ $name_warehousecode ถ้ากดตกลงจะหลับหน้าหลัก และ รีเซ็ต',style: TextStyle(fontSize: 13,fontWeight: FontWeight.w400,color: Colors.red),),
-                                   ):Container(),
-                       ],
-                     ),
-                   )
-                   :Container(
-                      margin: EdgeInsets.only(top: 10),
-                     child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                     Row(
-                       children: [
-                         Expanded(
-                           child: Container(
-                                //  margin: EdgeInsets.only(top: 10),
-                                 child: Text('${show_deliverys[index]['name']}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                               ),
-                         ),
-
-                           GestureDetector(
-                                                        onTap: ()async {
-                                                          setState1(() {
-                                                             if(S32 == show_deliverys[index]['id']){
-                                                                     setState((){
-                                                                        show_deliveryss2 = null;
-                                                              S32 = -1;
-                                                                     });
-                                                                      
-                                                                    }else{
-                                                                        setState((){
-                                                                          show_deliveryss2 = show_deliverys[index];
-                                                               S32 = show_deliverys[index]['id'];
-                                                                     });
-                                                                      
-                                                                    }
-                                                           
-                                                            
-                                                            print(show_deliveryss2);
-                                                            // Navigator.pop(context);
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: 5),
-                                                          child: S32 == show_deliverys[index]['id']
-                                                              ? Container(
-                                                                  height: 27,
-                                                                  // margin: EdgeInsets.only(top: 10, bottom: 10),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    //  borderRadius: BorderRadius.circular(10),
-                                                                    image:
-                                                                        new DecorationImage(
-                                                                      image: new AssetImage(
-                                                                          'assets/images/Ellipse 35.png'),
-                                                                      // fit: BoxFit.fill,
-                                                                    ),
-                                                                  ),
-                                                                  child: Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(5.0),
-                                                                    child:
-                                                                        Image.asset(
-                                                                      'assets/images/Rectangle 153.png',
-                                                                      height: 20,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : Image.asset(
-                                                                  'assets/images/Ellipse 36.png',
-                                                                  height: 25,
-                                                                ),
-                                                        ),
-                                                      ),
-                       ],
-                     ),
-                      id_warehousecode.toString() != '${show_deliverys[index]['id']}' ?
-                         show_deliverys[index]['name'] == 'พรีออเดอร์' ? Container()
-                       :Container(
-                                    //  margin: EdgeInsets.only(top: 10),
-                                     child: Text('*ปัจจุบันอยู่ สถานะ $name_warehousecode',style: TextStyle(fontSize: 13,fontWeight: FontWeight.w400,color: Colors.red),),
-                                   ):Container(),
-                         Container(
-                           margin: EdgeInsets.only(top: 10),
-                           child: Text('วันที่',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                         ),
-                          Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: TextFormField(
-                        onTap: () {
-                          chooseDate1();
-                        },
-                        readOnly: true,
-                        controller: _dateController2,
-                        keyboardType: TextInputType.number,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'วันเดือนปี',
-                          // labelStyle: b2,
-                          contentPadding:
-                              EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                        ),
-                      ),
-                    ),
-                     Container(
-                           margin: EdgeInsets.only(top: 10),
-                           child: Text('เวลา',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                         ),
-
-                  
-                         Container(
-                           margin: EdgeInsets.only(top: 10),
-                           height: 40,
-                           child: ListView.builder(
-                                                     physics: BouncingScrollPhysics(),
-                                                     scrollDirection: Axis.horizontal,
-                                                                            shrinkWrap: true,
-                                                                            itemCount: T.length,
-                                                   itemBuilder: (context, index1)  {
-                                return GestureDetector(
-                                  onTap: () {
-                                      setState1(() {
-                                         setState(() {
-                                                            if(TN2 ==  T[index1].toString()){
-                                                              
-                                                              TN2 = '00:00';
-                                                            }else{
-                                                               TN2 = T[index1].toString();
-                                                            }
-                                                            
-                                                            // print(TN);
-                                                            // Navigator.pop(context);
-                                                          });});
-                                  },
-                                  child: Container(
-                                                        margin: EdgeInsets.only(right: 10),
-                                                        decoration: BoxDecoration(
-                                                          color:  TN2 == T[index1].toString() ? Color(0xffFAAB35):Color.fromARGB(255, 255, 255, 255) ,
-                                                          border: Border.all(
-                                                        color: TN2 == T[index1].toString() ? Color(0xffFAAB35):Color(0xffFAAB35) ,
-                                                        width: 1),
-                                                          borderRadius:
-                                                              BorderRadius.circular(50),
-                                                        ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(right: 10,left: 10,top: 5,bottom: 5),
-                                                          child: Center(
-                                                            child: Text(
-                                                              '${T[index1]}',
-                                                              textScaleFactor: 1.0,
-                                                              style: TextStyle(
-                                                                // fontFamily: 'IBM',
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w600,
-                                                                color:  TN2 == T[index1].toString() ? Color.fromARGB(255, 255, 255, 255):Color(0xffFAAB35)
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                );
-                              }
-                            ),
-                         ),
-                                               
-                     
-                     ]),
-                   );
+                         ),         
+                                                      ]),
+                                                    );
+                                                   }
+                   
                  }
                ))),
                 Container(
@@ -1907,7 +1876,8 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
                                       // check_product();
                                     }else{
                                       id_warehousecode = S32.toString();
-                                       check_product();
+                                      
+                                       check_product(id_warehousecode);
                                     }
                                    
                                   });  
@@ -2247,6 +2217,7 @@ for (int f = startTimeInSeconds; f <= endTimeInSeconds; f += int.parse(show_deli
        
       
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
        String id_warehousecode = preferences.getString('id_warehousecode').toString();
       var url = Uri.parse('${MyConstant().domain}/order');
@@ -2337,6 +2308,7 @@ List<dynamic> falseNOProductIds7= [];
 
 String result7 = falseNOProductIds7.join(',');
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       print('user_id  ${user_id}');
       print('id_address  ${show_addressss!['id']}');
       print('price  ${widget.Sum}');
@@ -2362,13 +2334,14 @@ String result7 = falseNOProductIds7.join(',');
 
 
       print('shippingamount  ${show_promotionss == null
-          ?'${int.parse('${widget.Sum}')-Sumdelivery}' 
-          : show_promotionss!['discount_percent'] == null? '${int.parse('${widget.Sum}')-Sumdelivery-int.parse('${show_promotionss!['discount_bath']}')}'
-          :'${int.parse('${widget.Sum}')-Sumdelivery-((int.parse('${show_promotionss!['discount_percent']}')/100) * int.parse('${widget.Sum}'))}'}');
+          ?'${int.parse('${widget.Sum}')+Sumdelivery}' 
+          : show_promotionss!['discount_percent'] == null? '${int.parse('${widget.Sum}')+Sumdelivery-int.parse('${show_promotionss!['discount_bath']}')}'
+          :'${int.parse('${widget.Sum}')+Sumdelivery-((int.parse('${show_promotionss!['discount_percent']}')/100) * int.parse('${widget.Sum}'))}'}');
 
        print('id_cart  ${result4}');
       print('rate_amount  ${widget.totalAmount}');
       print('rate_product  ${result5}');
+
       response.fields['id_user'] =  user_id;
       response.fields['channelCode'] =  '${channelCode!['Code']}';
       response.fields['bank'] =  '${channelCode!['name1']}';
@@ -2403,9 +2376,9 @@ String result7 = falseNOProductIds7.join(',');
            response.fields['rate_shipping'] =  '$result7';
            
           response.fields['shippingamount'] = show_promotionss == null
-          ?'${int.parse('${widget.Sum}')-Sumdelivery}' 
-          : show_promotionss!['discount_percent'] == null? '${int.parse('${widget.Sum}')-Sumdelivery-int.parse('${show_promotionss!['discount_bath']}')}'
-          :'${int.parse('${widget.Sum}')-Sumdelivery-((int.parse('${show_promotionss!['discount_percent']}')/100) * int.parse('${widget.Sum}'))}';
+          ?'${int.parse('${widget.Sum}')+Sumdelivery}' 
+          : show_promotionss!['discount_percent'] == null? '${int.parse('${widget.Sum}')+Sumdelivery-int.parse('${show_promotionss!['discount_bath']}')}'
+          :'${int.parse('${widget.Sum}')+Sumdelivery-((int.parse('${show_promotionss!['discount_percent']}')/100) * int.parse('${widget.Sum}'))}';
             
             response.fields['id_cart'] =  '$result4';
               response.fields['rate_amount'] =  '${widget.totalAmount}';
@@ -2464,7 +2437,7 @@ String result7 = falseNOProductIds7.join(',');
 
 
   // เลือกการชำระเงิน
-    Future<void> check_product() async {
+    Future<void> check_product(var id_warehousecode) async {
     try {
     List<dynamic> falseNOProductIds4= [];
       
@@ -2486,23 +2459,28 @@ String result4 = falseNOProductIds4.join(',');
   }}
 
 String result = falseNOProductIds.join(',');
-
-List<dynamic> falseNOProductIds6= [];
+ print('ressum==>$products3');
+// List<dynamic> falseNOProductIds6= [];
       
-  for (var product in products3!) {
+//   for (var product in products3!) {
      
-          falseNOProductIds6.add(product['S3']);
+//           falseNOProductIds6.add(product['S3']);
         
-  }
+//   }
 
-String result6 = falseNOProductIds6.join(',');
-   SharedPreferences preferences = await SharedPreferences.getInstance();
-     
+// String result6 = falseNOProductIds6.join(',');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
+     print('ressum==>$id_warehousecode');
+      print('ressum==>$result');
+       print('ressum==>$result4');
       var uri = Uri.parse('${MyConstant().domain}/check_product');
       var ressum;
       
-            ressum = await http.post(uri,body: {
-         'id_delivery': '$result6',
+            ressum = await http.post(uri,headers: {
+       "Authorization":access_token
+      },body: {
+         'id_delivery': '$id_warehousecode',
          'id_product_amount': '$result',
          'id_cart': '$result4',
     
@@ -2528,9 +2506,12 @@ String result6 = falseNOProductIds6.join(',');
 late  List<dynamic> show_warehouses = [];
 Future<void> show_warehouse() async {
     try {
-    
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_warehouse');
-       var ressum = await http.get(uri,
+       var ressum = await http.get(uri,headers: {
+       "Authorization":access_token
+      }
      
             );
                

@@ -23,7 +23,20 @@ class Order_list extends StatefulWidget {
 }
 
 class _Order_listState extends State<Order_list> {
+  
+  
+  String getDelivery(String idDelivery) {
+    // แปลงค่า idDelivery เป็น List ของ String
+    List<String> ids = idDelivery.split(',');
 
+    // หาก List มีมากกว่า 1 ค่า เลือกค่าที่สอง
+    if (ids.length > 1) {
+      return ids[1];
+    } else {
+      // หากมีเพียงค่าเดียว คืนค่านั้น
+      return ids[0];
+    }
+  }
   late Map<String,dynamic>? data = widget.data;
   late double screenW, screenH;
   @override
@@ -208,7 +221,7 @@ class _Order_listState extends State<Order_list> {
                 // height: 2,
               ),
             ),
-             data!['status'].toString() == 'ที่ต้องได้รับ'? Container()
+             data!['status'].toString() == 'ที่ต้องได้รับ'||data!['status'].toString() == 'สำเร็จ'? Container()
                           :   Container(
                     margin: EdgeInsets.only(top: 10),
                     child: Padding(
@@ -232,7 +245,8 @@ class _Order_listState extends State<Order_list> {
                                                          child: Text('ส่งคำขอยกเลิกแล้ว',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),),
                                                        ):Container(
                                 margin: EdgeInsets.only(left: 5),
-                                                         child: Text('จะได้รับภายในวันที่ 29 ธ.ค. - 31 ธ.ค.',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),),
+                                                         child: getDelivery('${data!['id_delivery']}') == '2' ? Text('ไปรับในวันที่ ${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse('${data!['date_preorder']} ${data!['time_preorder']}'))}  ',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),)
+                                                         : Text('จัดส่งภายใน3วัน หลังจากสั่งซื้อ ',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),),
                                                        ),
                             ],
                           ),
@@ -240,7 +254,7 @@ class _Order_listState extends State<Order_list> {
                      
                     ),
                   ),
-               data!['status'].toString() == 'ที่ต้องได้รับ'? Container()
+               data!['status'].toString() == 'ที่ต้องได้รับ'||data!['status'].toString() == 'สำเร็จ'? Container()
                           :   Container(
               margin: EdgeInsets.only(top: 10, bottom: 10),
               child: Image.asset(
@@ -248,7 +262,7 @@ class _Order_listState extends State<Order_list> {
                 // height: 2,
               ),
             ),
-                 data!['status'].toString() == 'ที่ต้องได้รับ'? Container()
+                 data!['status'].toString() == 'ที่ต้องได้รับ'||data!['status'].toString() == 'สำเร็จ'? Container()
                           :    Container(
                     margin: EdgeInsets.only(top: 10),
                     child: Padding(
@@ -347,7 +361,7 @@ class _Order_listState extends State<Order_list> {
                      
                     ),
                   ),
-               data!['status'].toString() == 'ที่ต้องได้รับ'? Container()
+               data!['status'].toString() == 'ที่ต้องได้รับ'||data!['status'].toString() == 'สำเร็จ'? Container()
                           :   Container(
               margin: EdgeInsets.only(top: 10, bottom: 10),
               child: Image.asset(
@@ -418,7 +432,7 @@ class _Order_listState extends State<Order_list> {
                                                                                                          ],
                                                                                                        ),
                                                                     ),
-                                                                     data!['status'].toString() != 'ที่ต้องได้รับ'? Container()
+                                                                     data!['status'].toString() != 'ที่ต้องได้รับ'&&data!['status'].toString() != 'สำเร็จ'? Container()
                           :   Container(
                     margin: EdgeInsets.only(top: 10),
                     child: Padding(
@@ -442,8 +456,9 @@ class _Order_listState extends State<Order_list> {
                                                          child: Text('ส่งคำขอยกเลิกแล้ว',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),),
                                                        ):Container(
                                 margin: EdgeInsets.only(left: 5),
-                                                         child: '${data!['product_amounts'][index]['delivery']['id_delivery']}' == '2'?Text('จะมารับใน วันที่ ${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse('${data!['date_preorder']} ${data!['time_preorder']}'))}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),)
-                                                         :Text('${data!['product_amounts'][index]['delivery']['detail_delivery']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),),
+                                                         child: '${data!['product_amounts'][index]['delivery']['id_delivery']}' == '2'?Text('จะมารับใน วันที่ ${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse('${data!['date_preorder']} ${data!['time_preorder']}'))} น.',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),)
+                                                         :'${data!['product_amounts'][index]['delivery']['id_delivery']}' == '1'?Text('${data!['product_amounts'][index]['delivery']['detail_delivery']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),)
+                                                         :Text('จัดส่งภายใน${data!['lenght_preorder']}วัน หลังจากสั่งซื้อ',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 14,fontWeight: FontWeight.w400),),
                                                        ),
                             ],
                           ),
@@ -451,7 +466,7 @@ class _Order_listState extends State<Order_list> {
                      
                     ),
                   ),
-               data!['status'].toString() != 'ที่ต้องได้รับ'? Container()
+               data!['status'].toString() != 'ที่ต้องได้รับ'&&data!['status'].toString() != 'สำเร็จ'? Container()
                           :   Container(
               margin: EdgeInsets.only(top: 10, bottom: 10),
               child: Image.asset(
@@ -459,7 +474,7 @@ class _Order_listState extends State<Order_list> {
                 // height: 2,
               ),
             ),
-                 data!['status'].toString() != 'ที่ต้องได้รับ'? Container()
+                 data!['status'].toString() != 'ที่ต้องได้รับ'&&data!['status'].toString() != 'สำเร็จ'? Container()
                           :    Container(
                     margin: EdgeInsets.only(top: 10),
                     child: Padding(
@@ -779,7 +794,7 @@ class _Order_listState extends State<Order_list> {
                                        
                                    ),
                                   Container(
-                                           child: Text('29 ธ.ค. 2022 14:07:13',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffAFAFAF), fontSize: 14,fontWeight: FontWeight.w400),),
+                                           child: Text('${DateFormat('dd/MM/yyyy hh:mm:ss').format(DateTime.parse('${data!['history_created_at']}'))}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffAFAFAF), fontSize: 14,fontWeight: FontWeight.w400),),
                                          ),
                                       
                                      
@@ -835,13 +850,14 @@ class _Order_listState extends State<Order_list> {
 
   Future cancle_order() async {
     try {
-      print(widget.data!['order_no'].toString());
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
              var url = Uri.parse('${MyConstant().domain}/cancle_order');
       EasyLoading.show(status: 'กำลังยกเลิก');
       
      
       var response = await http.MultipartRequest('POST', url);
-  
+      response.headers['Authorization'] = access_token;
       response.fields['order_no'] =  widget.data!['order_no'].toString();
      
             
@@ -893,17 +909,19 @@ class _Order_listState extends State<Order_list> {
   try {
     
     SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
     String user_id = preferences.getString('id').toString();
     
     setState(() {
     
       
     });
+    
     var uri = Uri.parse('${MyConstant().domain}/status');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+        headers: {
+       "Authorization":access_token
+      },
         body: {
           "id_order": data!['id'].toString(),
         });

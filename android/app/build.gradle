@@ -72,9 +72,9 @@ android {
        release {
            signingConfig signingConfigs.release
        }
-       debug {
-           signingConfig signingConfigs.debug
-       }
+    //    debug {
+    //        signingConfig signingConfigs.debug
+    //    }
    }
 }
 

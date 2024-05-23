@@ -9,6 +9,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../linkapp.dart';
 import '../../../my_constant.dart';
 import 'package:http/http.dart' as http;
 
@@ -55,7 +56,7 @@ class _CartOrder2State extends State<CartOrder2> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   
+    checkDeepLink(context);
     show_history();
      Timer.periodic(Duration(seconds: 5), (Timer t) => show_history0());
     // Pay1();
@@ -114,6 +115,7 @@ class _CartOrder2State extends State<CartOrder2> {
     try {
       
    SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       Map? valueMap;
       var uri = Uri.parse('${MyConstant().domain}/chillpay');
@@ -121,7 +123,9 @@ class _CartOrder2State extends State<CartOrder2> {
       // print('valueMap1 ==> ${id0}');
       //  print('valueMap1 ==> ${channelCode!['Code']}');
       //   print('valueMap1 ==> ${user_id}');
-            ressum = await http.post(uri,body: {
+            ressum = await http.post(uri,headers: {
+       "Authorization":access_token
+      },body: {
          'id': '$id0',
         //  'channelCode': '${channelCode!['Code']}',
          'ipAddress': '127.01.01',
@@ -139,7 +143,7 @@ class _CartOrder2State extends State<CartOrder2> {
         Map<dynamic, dynamic>? valueMap1 = jsonDecode('${data['data']}');
         // print('data === 1 ${valueMap1!['PaymentUrl']}');
            
-          print('valueMap1 ==> ${valueMap1}');
+         
           MaterialPageRoute route = MaterialPageRoute(
             builder: (context) => Pay(id_U: '${valueMap1!['PaymentUrl']}'),);
         Navigator.push(context, route);
@@ -393,7 +397,7 @@ class _CartOrder2State extends State<CartOrder2> {
                                                          child: Text('ชำระเงินเงินผ่าน ${channelCode!['name']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff000000), fontSize: 14,fontWeight: FontWeight.w500),),
                                                        ),
                                    Container(
-                                                         child: Text('ยังไม่ได้ชำระเงินยอดผ่าน ${channelCode!['name1']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff9A9696), fontSize: 12,fontWeight: FontWeight.w400),),
+                                                         child: Text('ชำระเงินยอดผ่าน ${channelCode!['name1']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff9A9696), fontSize: 12,fontWeight: FontWeight.w400),),
                                                        ),
                               ]),
                             ),
@@ -525,16 +529,17 @@ class _CartOrder2State extends State<CartOrder2> {
   Future<void> show_history0() async {
   try {
    
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
     String user_id = preferences.getString('id').toString();
      setState(() {
     id0 = preferences.getString('id_order').toString();
     });
     var uri = Uri.parse('${MyConstant().domain}/status');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+        headers: {
+       "Authorization":access_token
+      },
         body: {
           "id_order": id0.toString(),
         });
@@ -574,7 +579,8 @@ late Map<String,dynamic>? show_historys = null;
   Future<void> show_history() async {
   try {
     
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
     String user_id = preferences.getString('id').toString();
     
     setState(() {
@@ -583,9 +589,9 @@ late Map<String,dynamic>? show_historys = null;
     });
     var uri = Uri.parse('${MyConstant().domain}/status');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+        headers: {
+       "Authorization":access_token
+      },
         body: {
           "id_order": id0,
         });

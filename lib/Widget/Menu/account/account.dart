@@ -57,11 +57,13 @@ class _AccountState extends State<Account> {
     });
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String user_id = preferences.getString('id').toString();
+
+       String access_token = preferences.getString('access_token').toString();
     var uri = Uri.parse('${MyConstant().domain}/show_history');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+       headers: {
+       "Authorization":access_token
+      },
         body: {
           "id_user": user_id.toString(),
         });
@@ -129,12 +131,13 @@ late  List<dynamic> product_users = [];
     });
     SharedPreferences preferences = await SharedPreferences.getInstance();
     name = preferences.getString('name').toString();
+       String access_token = preferences.getString('access_token').toString();
    String user_id = preferences.getString('id').toString();
     var uri = Uri.parse('${MyConstant().domain}/product_user');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+        headers: {
+       "Authorization":access_token
+      },
         body: {
            'id_user': user_id
         });
@@ -173,12 +176,14 @@ Future<void> show_user() async {
   
     SharedPreferences preferences = await SharedPreferences.getInstance();
    String user_id = preferences.getString('id').toString();
+
+       String access_token = preferences.getString('access_token').toString();
    logo = preferences.getString('logo').toString();
     var uri = Uri.parse('${MyConstant().domain}/show_user');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+       headers: {
+       "Authorization":access_token
+      },
         body: {
            'id_user': user_id
         });
@@ -261,8 +266,8 @@ Future<void> show_user() async {
                               child: Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child: Container(
-                                  height: 40,
-                                  width: 40,
+                                  height: 60,
+                                  width: 60,
                                   child:'$img' == 'null'||'$img' == ''?  logo == '' || logo == 'null' ?Image.asset(
                                         'assets/home/Rectangle 17.png',
                                       ):ClipRRect(  borderRadius: BorderRadius.circular(50),child: Image.network(logo))
@@ -577,6 +582,7 @@ Future<void> show_user() async {
                          ),
            
                     Container(
+                      alignment: Alignment.centerLeft,
                                   height: 160,
                                    margin: EdgeInsets.only(left: 25),
                                   child: ListView.builder(
@@ -616,7 +622,7 @@ Future<void> show_user() async {
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
                                                                         Expanded(
-                                                                          child: Text('${product_users[index]['name']}',textScaleFactor: 1.0,
+                                                                          child: Text('${product_users[index]['name_size']} (${product_users[index]['name_product']})',textScaleFactor: 1.0,
                                                                           overflow: TextOverflow.ellipsis,
                                                                           maxLines: 2,
                                                                           style: TextStyle(
@@ -709,6 +715,9 @@ Future<void> show_user() async {
                                  if (navigationResult != null ) {
 
                                  }
+                         },),  
+                          Line('icons8-user-100 (1) 4.png','ช่องทางการติดต่อทั้งหมด',() async{
+                          
                          },),  
                           clear(),          
                    ],

@@ -340,6 +340,7 @@ bool isChecked = false;
 
    Future<void> login(var Username,var password) async {
     try {
+
       EasyLoading.show(status: 'กำลังตรวจสอบข้อมูล');
       var uri = Uri.parse('${MyConstant().domain}/login');
        var ressum = await http.post(uri,
@@ -377,6 +378,7 @@ bool isChecked = false;
   
   Future routToService(var Data_User,var access_token) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
+  
     preferences.setString('id', Data_User['id'].toString());
     preferences.setString('name', Data_User['name'].toString());
     preferences.setString('email', Data_User['email'].toString());
@@ -398,7 +400,7 @@ bool isChecked = false;
    
   
          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                         builder: (context)=>    Receive_the_product(),), (route) => true);
+                         builder: (context)=>    Receive_the_product(),), (route) => false);
   //  MaterialPageRoute route =
   //       MaterialPageRoute(builder: (context) => Menu(Data_User:Data_User,index: 0,));
   //   Navigator.pushAndRemoveUntil(context, route, (route) => false);
@@ -472,11 +474,14 @@ Map<String, dynamic>? _userData;
 
 Future sigIn()async{
  final user = await GoogleSignInApi.login();
-
+print('user==>$user');
  if(user == null){
-   print('user === > 3 $user');
+
+
  }else{
-  login(user.email.toString(),user.id.toString());
+ 
+     print('user==>$user');
+  await login(user.email.toString(),user.id.toString());
  }
 }
    

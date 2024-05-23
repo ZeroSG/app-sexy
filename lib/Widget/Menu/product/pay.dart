@@ -116,6 +116,7 @@ late WebViewController _webViewController;
                             
                                
                                    String Url = url;
+                                    Navigator.pop(context);
                                        await launch(Url);
                                   // Navigator.pop(context);
                                   //   MaterialPageRoute route = MaterialPageRoute(
@@ -204,4 +205,15 @@ late WebViewController _webViewController;
 // } else {
   
 // }}
+
+
+_launchURL(String url) async {
+if (await canLaunch(url)) {
+    
+  await launch(url);
+  /// Wait until the browser closes
+ 
+} else {
+  
+}}
 }

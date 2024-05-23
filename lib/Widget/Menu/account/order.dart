@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../my_constant.dart';
+import '../product/CartOrder2.dart';
 import '../product/order2.dart';
 import '../product/pay.dart';
 import 'status.dart';
@@ -34,12 +35,13 @@ late  List<dynamic> show_historys = [];
       loading = true;
     });
     SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
     String user_id = preferences.getString('id').toString();
     var uri = Uri.parse('${MyConstant().domain}/show_history');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+        headers: {
+       "Authorization":access_token
+      },
         body: {
           "id_user": user_id.toString(),
         });
@@ -313,7 +315,7 @@ show_history();
                                                 crossAxisAlignment: CrossAxisAlignment.end,
                                                 children: [
                                                 Container(
-                                                  margin: EdgeInsets.only(top: 20,bottom: 20),
+                                                  margin: EdgeInsets.only(top: 10,bottom: 10),
                                                   child: Row(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -383,7 +385,11 @@ show_history();
                                                           if(show_historys[index]['status'].toString() == 'ที่ต้องชำระ'){
                                                             SharedPreferences preferences = await SharedPreferences.getInstance();
                                                               preferences.setString('id_order', show_historys[index]['id'].toString());
-                                                           generatePament(show_historys[index]['id'].toString());
+          // generatePament(lnformation,'127.01.01');
+           MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => CartOrder2(index:'1'),);
+        Navigator.push(context, route);
+                                                          //  generatePament(show_historys[index]['id'].toString());
                                                           }else{
                                                              MaterialPageRoute route = MaterialPageRoute(
             builder: (context) => Order_list(data: show_historys[index],),);
@@ -417,21 +423,11 @@ show_history();
                                                                     shrinkWrap: true,
                                                                     itemCount: show_historys[index]['product_amounts'].length,
                                                                                    itemBuilder: (context, index1)  {
-                                                                                   return   show_historys[index]['status'].toString() != 'ที่ต้องได้รับ'? Container()
+                                                                                   return   show_historys[index]['status'].toString() != 'ที่ต้องได้รับ' && show_historys[index]['status'].toString() != 'สำเร็จ'? Container()
                                                                          : Container(
                                                                            margin: EdgeInsets.only(bottom: 10),
                                                                            alignment: Alignment.topRight,
-                                                                           child: GestureDetector(
-                                                                                                                             onTap: () async{
-                                                                                                                              
-                                                                                                                                 if('${show_historys[index]['product_amounts'][index1]['detail_status']}'== 'ที่ต้องได้รับ'){
-                                                                                                                                    print('res.statusCode===>${show_historys[index]['id'].toString()}');
-                                                                                                                                         print('res.statusCode===>${show_historys[index]['product_amounts'][index1]['id_product_amount'].toString()}');
-                                                                                                                                  
-                                                                                                                                 confirm_order(show_historys[index]['id'].toString(),show_historys[index]['product_amounts'][index1]['id_product_amount'].toString());
-                                                                                                                               }  
-                                                                                                                                 },
-                                                                                                                               child: Row(
+                                                                           child: Row(
                                                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                                                                  children: [
                                                                                                                                    Container(
@@ -440,27 +436,43 @@ show_history();
                                                                                                                                    Container(
                                                                                                                                      
                                                                                                                                      decoration: BoxDecoration(
-                                                                                                                                                   color: 'ที่ต้องชำระ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()? Color(0xffBA1F23):'ที่ต้องจัดส่ง' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color(0xff979696):'ที่ต้องได้รับ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color.fromARGB(255, 0, 137, 21):'ที่ต้องจัดส่ง' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color(0xff979696):'สำเร็จ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color.fromARGB(255, 65, 2, 255):Colors.white,
+                                                                                                                                                   color: 'ที่ต้องชำระ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()? Color(0xffBA1F23):'ที่ต้องจัดส่ง' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color(0xff979696):'ที่ต้องได้รับ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color.fromARGB(255, 0, 137, 21):'ที่ต้องจัดส่ง' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color(0xff979696):show_historys[index]['status'].toString() == 'สำเร็จ'&&'สำเร็จ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Color.fromARGB(255, 255, 2, 2):Colors.white,
                                                                                                                                                    borderRadius: BorderRadius.circular(50),
                                                                                                                                                  ),
-                                                                                                                                                    child: Padding(
-                                                                           padding: const EdgeInsets.only(top: 8,bottom: 8,right: 20,left: 20),
-                                                                           child:
-                                                                                 'ที่ต้องได้รับ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Container(
-                                                                                     child: Text('รับสินค้า',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffFFFFFF), fontSize: 12,fontWeight: FontWeight.w600),),
-                                                                                   ):Container(
-                                                                                     child: Text('${show_historys[index]['product_amounts'][index1]['detail_status']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffFFFFFF), fontSize: 12,fontWeight: FontWeight.w600),),
-                                                                                   ),
-                                                                               
-                                                                             
-                                                                           
-                                                                             
-                                                                           
+                                                                                                                                                    child: GestureDetector(
+                                                                                                                             onTap: () async{
+                                                                                                                              
+                                                                                                                                 if('${show_historys[index]['product_amounts'][index1]['detail_status']}'== 'ที่ต้องได้รับ'){
+                                                                                                                                    print('res.statusCode===>${show_historys[index]['id'].toString()}');
+                                                                                                                                         print('res.statusCode===>${show_historys[index]['product_amounts'][index1]['id_product_amount'].toString()}');
+                                                                                                                                  
+                                                                                                                                 confirm_order(show_historys[index]['id'].toString(),show_historys[index]['product_amounts'][index1]['id_product_amount'].toString());
+                                                                                                                               } 
+                                                                                                                                if(show_historys[index]['status'].toString() == 'สำเร็จ'&&show_historys[index]['product_amounts'][index1]['detail_status'].toString() == 'สำเร็จ'){
+                                                                                                                                  buy_again(show_historys[index]['order_no'].toString(),'${show_historys[index]['product_amounts'][index1]['id_product_amount']}');
+                                                                                                                               }  
+                                                                                                                                 },
+                                                                                                                                                      child: Padding(
+                                                                                                                                                                                                                               padding: const EdgeInsets.only(top: 8,bottom: 8,right: 20,left: 20),
+                                                                                                                                                                                                                               child:
+                                                                                                                                                                                                                                     'ที่ต้องได้รับ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Container(
+                                                                                                                                                                                                                                         child: Text('รับสินค้า',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffFFFFFF), fontSize: 12,fontWeight: FontWeight.w600),),
+                                                                                                                                                                                                                                       ):show_historys[index]['status'].toString() == 'สำเร็จ'&&'สำเร็จ' == show_historys[index]['product_amounts'][index1]['detail_status'].toString()?Container(
+                                                                                                                                                                                                                                         child: Text('ซื้ออีกครั้ง',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffFFFFFF), fontSize: 12,fontWeight: FontWeight.w600),),
+                                                                                                                                                                                                                                       ):Container(
+                                                                                                                                                                                                                                         child: Text('${show_historys[index]['product_amounts'][index1]['detail_status']}',textScaleFactor: 1.0,style: TextStyle(color: Color(0xffFFFFFF), fontSize: 12,fontWeight: FontWeight.w600),),
+                                                                                                                                                                                                                                       ),
+                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                 
+                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                 
+                                                                                                                                                                                                                               
+                                                                                                                                                      ),
                                                                                                                                                     ),
                                                                                                                                                   ),
                                                                                                                                  ],
                                                                                                                                ),
-                                                                                                                             ),
+                                                                                                                             
                                                                          );
                                                                                    }),
                                                 Container(
@@ -509,162 +521,17 @@ show_history();
                                                       ),
                                                     ),
                                                   'ยกเลิกแล้ว' == show_historys[index]['status'].toString()  ? Container() : 
-                                            //        GestureDetector(
-                                            //           onTap: () async{
-                                            //           Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
-                                            //                                        builder: (_) =>Status() ),);
-                                            //                                if (navigationResult != null ) {
-                                          
-                                            //                                }
-                                            //           },
-                                            //           child: Container(
-                                            //             decoration: BoxDecoration(
-                                            //                           color:  'ที่ต้องชำระ' == show_historys[index]['status'].toString()? Color(0xffBD616E).withOpacity(0.31)
-                                            //                           :'ที่ต้องจัดส่ง' == show_historys[index]['status'].toString()? Color(0xffF04B16).withOpacity(0.15)
-                                            //                           :'ที่ต้องได้รับ' == show_historys[index]['status'].toString()? Color(0xffECAA46).withOpacity(0.15)
-                                            //                           // : 'สำเร็จ' == show_historys[index]['status'].toString()?Color(0xff11C739).withOpacity(0.15)
-                                            //                           : Colors.white,
-                                            //                           borderRadius: BorderRadius.circular(10),
-                                            //                         ),
-                                            //                            child: Padding(
-                                            //                              padding: const EdgeInsets.all(10.0),
-                                            //                              child:
-                                            //                              'ที่ต้องชำระ' == show_historys[index]['status'].toString()? Row(
-                                            //                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //                                children: [
-                                            //                                Container(
-                                            //                                  child: Row(
-                                            //                                    children: [
-                                            //                                      Container(
-                                            //                                        margin: EdgeInsets.only(right: 10),
-                                            //                                        child: Image.asset('assets/images/icons8-dollar-coin-100 (1) 2.png',
-                                            //                                        height: 18,),
-                                            //                                      ),
-                                            //                                      Container(
-                                            //                                        child: Text('พัสดุที่ต้องชำระเงิน',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 12,fontWeight: FontWeight.w400),),
-                                            //                                      ),
-                                            //                                    ],
-                                            //                                  ),
-                                            //                                ),
-                                            //                                Container(
-                                            //                                    child: Row(
-                                            //                                      children: [
-                                          
-                                            //                                        Container(
-                                            //  margin: EdgeInsets.only(left: 10),
-                                            //  child: Image.asset('assets/images/Rectangle 96.png',
-                                            //  color: Color(0xffBD616E),
-                                            //  height: 18,),
-                                            //                                        ),
-                                            //                                      ],
-                                            //                                    ),
-                                            //                                  ),
-                                                                           
-                                            //                              ],): 'ที่ต้องจัดส่ง' == show_historys[index]['status'].toString()? Row(
-                                            //                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //                                children: [
-                                            //                                Container(
-                                            //                                  child: Row(
-                                            //                                    children: [
-                                            //                                      Container(
-                                            //                                        margin: EdgeInsets.only(right: 10),
-                                            //                                        child: Image.asset('assets/images/icons8-shipping-product-100 1.png',
-                                            //                                        height: 18,),
-                                            //                                      ),
-                                            //                                      Container(
-                                            //                                        child: Text('พัสดุที่ต้องจัดส่ง',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 12,fontWeight: FontWeight.w400),),
-                                            //                                      ),
-                                            //                                    ],
-                                            //                                  ),
-                                            //                                ),
-                                            //                                Container(
-                                            //                                    child: Row(
-                                            //                                      children: [
-                                          
-                                            //                                        Container(
-                                            //  margin: EdgeInsets.only(left: 10),
-                                            //  child: Image.asset('assets/images/Rectangle 96.png',
-                                            //  color: Color(0xffF04B16),
-                                            //  height: 18,),
-                                            //                                        ),
-                                            //                                      ],
-                                            //                                    ),
-                                            //                                  ),
-                                                                           
-                                            //                              ],):'ที่ต้องได้รับ' == show_historys[index]['status'].toString()? Row(
-                                            //                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //                                children: [
-                                            //                                Container(
-                                            //                                  child: Row(
-                                            //                                    children: [
-                                            //                                      Container(
-                                            //                                        margin: EdgeInsets.only(right: 10),
-                                            //                                        child: Image.asset('assets/images/icons8-product-100 3.png',
-                                            //                                        height: 18,),
-                                            //                                      ),
-                                            //                                      Container(
-                                            //                                        child: Text('พัสดุที่ต้องได้รับ',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 12,fontWeight: FontWeight.w400),),
-                                            //                                      ),
-                                            //                                    ],
-                                            //                                  ),
-                                            //                                ),
-                                            //                                Container(
-                                            //                                    child: Row(
-                                            //                                      children: [
-                                          
-                                            //                                        Container(
-                                            //  margin: EdgeInsets.only(left: 10),
-                                            //  child: Image.asset('assets/images/Rectangle 96.png',
-                                            //  color: Color(0xffECAA46),
-                                            //  height: 18,),
-                                            //                                        ),
-                                            //                                      ],
-                                            //                                    ),
-                                            //                                  ),
-                                                                           
-                                            //                              ],)
-                                            // //                              : 'สำเร็จ' == show_historys[index]['status'].toString()? Row(
-                                            // //                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            // //                                children: [
-                                            // //                                Container(
-                                            // //                                  child: Row(
-                                            // //                                    children: [
-                                            // //                                      Container(
-                                            // //                                        margin: EdgeInsets.only(right: 10),
-                                            // //                                        child: Image.asset('assets/images/icons8-container-truck-100 2.png',
-                                            // //                                        height: 18,),
-                                            // //                                      ),
-                                            // //                                      Container(
-                                            // //                                        child: Text('พัสดุถูกจัดส่งสำเร็จแล้ว',textScaleFactor: 1.0,style: TextStyle(color: Color(0xff1E1E1E), fontSize: 12,fontWeight: FontWeight.w400),),
-                                            // //                                      ),
-                                            // //                                    ],
-                                            // //                                  ),
-                                            // //                                ),
-                                            // //                                Container(
-                                            // //                                    child: Row(
-                                            // //                                      children: [
-                                          
-                                            // //                                        Container(
-                                            // //  margin: EdgeInsets.only(left: 10),
-                                            // //  child: Image.asset('assets/images/Rectangle 96.png',
-                                            // //  color: Color(0xff11C739),
-                                            // //  height: 18,),
-                                            // //                                        ),
-                                            // //                                      ],
-                                            // //                                    ),
-                                            // //                                  ),
-                                                                           
-                                            // //                              ],)
-                                            //                              :Container(),
-                                            //                            ),
-                                            //                          ),
-                                            //         ),
+                                         
                                                GestureDetector(
                                                     onTap: () async{
                                                           if(show_historys[index]['status'].toString() == 'ที่ต้องชำระ'){
                                                               SharedPreferences preferences = await SharedPreferences.getInstance();
                                                               preferences.setString('id_order', show_historys[index]['id'].toString());
-                                                           generatePament(show_historys[index]['id'].toString());
+          // generatePament(lnformation,'127.01.01');
+           MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => CartOrder2(index:'1'),);
+        Navigator.push(context, route);
+                                                          //  generatePament(show_historys[index]['id'].toString());
                                                           }
                                                             if(show_historys[index]['status'].toString() == 'ที่ต้องจัดส่ง'){
                                                             cancle_order(show_historys[index]['order_no'].toString());
@@ -684,7 +551,7 @@ show_history();
                                                           
                                                         },
                                                       child: Container(
-                                                        margin: EdgeInsets.only(top: 10),
+                                                        margin: EdgeInsets.only(top: 0),
                                                         decoration: BoxDecoration(
                                                                       color: 'ที่ต้องชำระ' == show_historys[index]['status'].toString()? Color(0xffBA1F23):'ที่ต้องจัดส่ง' == show_historys[index]['status'].toString()?Color(0xff979696):Colors.white,
                                                                       borderRadius: BorderRadius.circular(50),
@@ -709,7 +576,8 @@ show_history();
                                                                        ),
                                                                      ),
                                                     ),
-                                                        Container(
+                                                      'ที่ต้องได้รับ' == show_historys[index]['status'].toString()||'สำเร็จ' == show_historys[index]['status'].toString() ?  Container()
+                                                      : Container(
                                                       margin: EdgeInsets.only(top: 10, bottom: 10),
                                                       child: Image.asset(
                                                         'assets/images/Line 11.png',
@@ -742,13 +610,18 @@ show_history();
     Future<void> generatePament(var id) async {
     try {
       
-   SharedPreferences preferences = await SharedPreferences.getInstance();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       Map? valueMap;
       var uri = Uri.parse('${MyConstant().domain}/chillpay');
       var ressum;
 
-            ressum = await http.post(uri,body: {
+            ressum = await http.post(uri,
+            headers: {
+       "Authorization":access_token
+      },
+      body: {
          'id': '$id',
         //  'channelCode': '${channelCode!['Code']}',
          'ipAddress': '127.01.01',
@@ -787,13 +660,14 @@ show_history();
 
   Future cancle_order(var order_no) async {
     try {
-      print(order_no.toString());
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
              var url = Uri.parse('${MyConstant().domain}/cancle_order');
       EasyLoading.show(status: 'กำลังยกเลิก');
       
      
       var response = await http.MultipartRequest('POST', url);
-  
+      response.headers['Authorization'] = access_token;
       response.fields['order_no'] =  order_no.toString();
      
             
@@ -825,16 +699,14 @@ show_history();
 
    Future confirm_order(var id ,var id_product_amount) async {
     try {
-      print('res.statusCode===>$id');
-      print('res.statusCode===>${id_product_amount}');
-     print(id);
-      print(id_product_amount);
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
              var url = Uri.parse('${MyConstant().domain}/confirm_order');
       EasyLoading.show(status: 'กำลังยืนยันรับสินค้า');
       
      
       var response = await http.MultipartRequest('POST', url);
-       
+      response.headers['Authorization'] = access_token; 
       response.fields['id'] =  id.toString();
       response.fields['status'] =  'สำเร็จ';
       response.fields['id_product_amount'] =  '$id_product_amount';
@@ -865,9 +737,69 @@ show_history();
 
    
   }
+  
 
    void printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  }
+
+
+
+ 
+
+
+   Future<void> buy_again(var order_no,var id_product_amount)  async {
+    try {
+      setState(() {
+        loading = true;
+      });
+     print('ressum.statusCode ==>${order_no}');   
+       EasyLoading.show(status: 'กำลังสั่งซื้ออีกครั้ง');
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
+       String user_id = preferences.getString('id').toString();
+        print(id_product_amount);
+       print(user_id);
+      var uri = Uri.parse('${MyConstant().domain}/buy_again');
+       var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
+       body: {
+         'order_no': '$order_no',
+         'id_product_amount': '$id_product_amount',
+          //  'id': '$id',
+       }
+            );
+           print('ressum.statusCode ==>${ressum.statusCode}');   
+      if(ressum.statusCode == 200){
+          var  lnformation  = jsonDecode(ressum.body);
+          EasyLoading.showSuccess(lnformation['message'].toString()).then((value)async {
+            setState(() {
+         print(lnformation);
+             
+                 loading = false;
+ 
+       
+         
+        });
+        });   
+       
+          // data_promotion_stores();
+    }else {
+
+      var  lnformation  = jsonDecode(ressum.body);
+        printWrapped(lnformation['message'].toString());
+        EasyLoading.showError(lnformation['message'].toString());
+        setState(() {
+               loading = false;
+ 
+        });
+    }
+    } catch (e) {
+       printWrapped(e.toString());
+      EasyLoading.showError(e.toString());
+    }
   }
 }

@@ -37,11 +37,15 @@ Future<void> data_banner() async {
       setState(() {
         loading = true;
       });
-       SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
            name = preferences.getString('name').toString();
            logo = preferences.getString('logo').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_dashboard');
-       var ressum = await http.get(uri
+       var ressum = await http.get(uri,
+       headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -73,10 +77,14 @@ Future<void> data_banner() async {
       setState(() {
         loading = true;
       });
-       SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
            name = preferences.getString('name').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_news');
-       var ressum = await http.get(uri
+       var ressum = await http.get(uri,
+       headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -108,10 +116,14 @@ Future<void> data_banner() async {
       setState(() {
         loading = true;
       });
-        SharedPreferences preferences = await SharedPreferences.getInstance();
+         SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String id_warehousecode = preferences.getString('id_warehousecode').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_product');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_warehousecode': '$id_warehousecode'
        }
@@ -219,8 +231,8 @@ late TextEditingController _searchController = TextEditingController();
                               child:  Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child:  Container(
-                                  height: 40,
-                                  width: 40,
+                                  height: 60,
+                                  width: 60,
                                   child: logo == '' || logo == 'null' ?
                                   Image.asset(
                                         'assets/home/Rectangle 17.png',
@@ -308,7 +320,7 @@ late TextEditingController _searchController = TextEditingController();
                                 Icons.search,
                                 color: Color.fromARGB(255, 255, 255, 255),
                               ),
-                              hintText: 'คุณกำลังมองหาหนูประเภทไหนอยู่ ?',
+                              hintText: 'คุณกำลังมองหาสินค้าอะไร',
                               hintStyle: TextStyle(color: Color(0xffFFFFFF)),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
@@ -571,9 +583,9 @@ late TextEditingController _searchController = TextEditingController();
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
                                                                         Expanded(
-                                                                          child: Text('${data[index]['size_name']}',textScaleFactor: 1.0,
+                                                                          child: Text('${data[index]['size_name']} (${data[index]['name']})',textScaleFactor: 1.0,
                                                                           overflow: TextOverflow.ellipsis,
-                                                                          maxLines: 2,
+                                                                          maxLines: 1,
                                                                           style: TextStyle(
                                                                                                                 // fontFamily: 'IBM',
                                                                                                                 fontSize: 14,

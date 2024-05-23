@@ -1,27 +1,27 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../Style/style.dart';
-import '../../my_constant.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'forgot5.dart';
+import '../../../Style/style.dart';
+import '../../../my_constant.dart';
+import 'otpaccount2.dart';
 
-class forgot4 extends StatefulWidget {
-  Map<String,dynamic>? data;
-   forgot4({super.key,this.data});
+class otpaccount extends StatefulWidget {
+  Map<String,dynamic>? User;
+   otpaccount({super.key,this.User});
 
   @override
-  State<forgot4> createState() => _forgot4State();
+  State<otpaccount> createState() => _otpaccountState();
 }
 
-class _forgot4State extends State<forgot4> {
+class _otpaccountState extends State<otpaccount> {
 
  
- late Map<String,dynamic>? User= widget.data;
+ late Map<String,dynamic>? User= widget.User;
 bool isChecked = false;
   @override
   Widget build(BuildContext context) {
@@ -241,10 +241,10 @@ bool isChecked = false;
     bool loading = true;
     Future<void> sendEmail() async {
     try {
-   
       setState(() {
         loading = true;
       });
+  
       var uri = Uri.parse('${MyConstant().domain}/sendEmail');
        var ressum = await http.post(uri,
        
@@ -260,7 +260,7 @@ bool isChecked = false;
          Code  =lnformation['data']['confirmationCode'].toString();
           loading = false;
              MaterialPageRoute route = MaterialPageRoute(
-                                  builder: (context) => forgot5(User:User,Code:Code,isChecked: isChecked,));
+                                  builder: (context) => otpaccount2(User:User,Code:Code,isChecked: isChecked,));
                               Navigator.push(context, route);
         
                 
@@ -285,10 +285,10 @@ bool isChecked = false;
       setState(() {
         loading = true;
       });
-
+   
       var uri = Uri.parse('${MyConstant().domain}/sendMobile');
        var ressum = await http.post(uri,
-       
+      
         body: {
          'phone': '${User!['phone']}'
        }
@@ -300,11 +300,11 @@ bool isChecked = false;
         setState(() {
          Code  =lnformation['data'].toString();
          print(Code);
-        Map<dynamic, dynamic>? response = json.decode(lnformation['data']['response']);
-
+         Map<dynamic, dynamic>? response = json.decode(lnformation['data']['response']);
+          print(response);
           loading = false;
              MaterialPageRoute route = MaterialPageRoute(
-                                  builder: (context) => forgot5(User:User,isChecked: isChecked,response:response));
+                                  builder: (context) => otpaccount2(User:User,isChecked: isChecked,response:response));
                               Navigator.push(context, route);
         
                 

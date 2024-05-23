@@ -42,9 +42,12 @@ Future<void> show_product() async {
         loading = true;
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String id_warehousecode = preferences.getString('id_warehousecode').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_product');
-       var ressum = await http.post(uri,
+       var ressum = await http.post(uri,headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_warehousecode': '$id_warehousecode'
        }
@@ -109,11 +112,14 @@ Future<void> show_product() async {
       setState(() {
         loading = true;
       });
-       SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String id_warehousecode = preferences.getString('id_warehousecode').toString();
       var uri = Uri.parse('${MyConstant().domain}/filter');
        var ressum = await http.post(uri,
-       body: {
+       headers: {
+       "Authorization":access_token
+      },body: {
            "id_type_animal":  Category!['id'].toString() =='0'? '':'${Category!['id'].toString()}',
            "price":  price!['id'].toString() =='0'? '':'${price!['id'].toString()}',
            "id_size": size!['id'].toString() =='0'? '':'${size!['id'].toString()}',
@@ -206,7 +212,7 @@ bool DD = true;
                                         Icons.search,
                                         color: Color.fromARGB(255, 255, 255, 255),
                                       ),
-                                      hintText: 'คุณกำลังมองหาหนูประเภทไหนอยู่ ?',
+                                      hintText: 'คุณกำลังมองหาสินค้าอะไร',
                                       hintStyle: TextStyle(color: Color(0xffFFFFFF)),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(30),
@@ -611,117 +617,124 @@ bool DD = true;
                                   Container(
                                              height: 100,
                                
-                                    child: ListView.builder(
-                                           physics: BouncingScrollPhysics(),
-                                           scrollDirection: Axis.horizontal,
-                                                                  shrinkWrap: true,
-                                                                  itemCount: i.length > 3 ? 3 :i.length,
-                                         itemBuilder: (context, index)  {
-                                        return  InkWell(
-                                                 onTap: () async{
-                                          Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
-                                               builder: (_) =>Buy_Again(index:2,id_type_animal:i[index]['id'].toString(),id_type_animalname:i[index]['name'].toString()) ),);
-                                       if (navigationResult != null ) {
-                                  
-                                       }
-                                     },
-                                          child: Container(
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Builder(
-                                                  builder: (context) {
-                                                    return Container(
-                                                      margin: EdgeInsets.only(right: 10),
-                                                                                    height: 100,
-                                                                                    width: 100,
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: Color(0xffE05C45),
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.only(right: 20,left: 20),
-                                                                                      child: Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                        mainAxisAlignment:MainAxisAlignment.center,
-                                                                                        children: [
-                                                                                          Image.asset(
-                                                                                                'assets/home/Rectangle 89.png',
-                                                                                          ),
-                                                                                          Text('${i[index]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
-                                                                // fontFamily: 'IBM',
-                                                                fontSize: 10,
-                                                                fontWeight: FontWeight.w500,
-                                                                color: Color(0xffFFFFFF),
-                                                              ),),
-                                                                                        ],
+                                    width: screenW*1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 40),
+                                      child: ListView.builder(
+                                             physics: BouncingScrollPhysics(),
+                                             scrollDirection: Axis.horizontal,
+                                                                    shrinkWrap: true,
+                                                                    itemCount: i.length > 3 ? 3 :i.length,
+                                           itemBuilder: (context, index)  {
+                                          return  InkWell(
+                                                   onTap: () async{
+                                            Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
+                                                 builder: (_) =>Buy_Again(index:2,id_type_animal:i[index]['id'].toString(),id_type_animalname:i[index]['name'].toString()) ),);
+                                         if (navigationResult != null ) {
+                                                                      
+                                         }
+                                       },
+                                            child: Container(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Builder(
+                                                    builder: (context) {
+                                                      return Container(
+                                                        margin: EdgeInsets.only(right: 10),
+                                                                                      height: 100,
+                                                                                      width: 100,
+                                                                                      decoration: BoxDecoration(
+                                                                                        color: Color(0xffE05C45),
+                                                                                        borderRadius: BorderRadius.circular(10),
                                                                                       ),
-                                                                                    ),
-                                                                                    
-                                                                                  );
-                                                  }
-                                                ),
-                                                  //  Container(
-                                                  //    margin: EdgeInsets.only(right: 10),
-                                                  //                               height: 100,
-                                                  //                               width: 100,
-                                                  //                               decoration: BoxDecoration(
-                                                  //                                 color: Color(0xffFF8158),
-                                                  //                                 borderRadius: BorderRadius.circular(10),
-                                                  //                               ),
-                                                  //                               child: Padding(
-                                                  //                                 padding: const EdgeInsets.only(right: 20,left: 20),
-                                                  //                                 child: Column(
-                                                  //                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                                  //                                   mainAxisAlignment:MainAxisAlignment.center,
-                                                  //                                   children: [
-                                                  //                                     Image.asset(
-                                                  //                                           'assets/home/Rectangle 89.png',
-                                                  //                                     ),
-                                                  //                                     Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
-                                                  //           // fontFamily: 'IBM',
-                                                  //           fontSize: 10,
-                                                  //           fontWeight: FontWeight.w500,
-                                                  //           color: Color(0xffFFFFFF),
-                                                  //         ),),
-                                                  //                                   ],
-                                                  //                                 ),
-                                                  //                               ),
-                                                                                
-                                                  //                             ),
-                                                          //                      Container(
-                                                          //                        margin: EdgeInsets.only(right: 10),
-                                                          //                       height: 100,
-                                                          //                       width: 100,
-                                                          //                       decoration: BoxDecoration(
-                                                          //                         color: Color(0xffFAAB35),
-                                                          //                         borderRadius: BorderRadius.circular(10),
-                                                          //                       ),
-                                                          //                       child: Padding(
-                                                          //                         padding: const EdgeInsets.only(right: 20,left: 20),
-                                                          //                         child: Column(
-                                                          //                           crossAxisAlignment: CrossAxisAlignment.center,
-                                                          //                           mainAxisAlignment:MainAxisAlignment.center,
-                                                          //                           children: [
-                                                          //                             Image.asset(
-                                                          //                                   'assets/home/Rectangle 89.png',
-                                                          //                             ),
-                                                          //                             Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
-                                                          //   // fontFamily: 'IBM',
-                                                          //   fontSize: 10,
-                                                          //   fontWeight: FontWeight.w500,
-                                                          //   color: Color(0xffFFFFFF),
-                                                          // ),),
-                                                          //                           ],
-                                                          //                         ),
-                                                          //                       ),
-                                                                                
-                                                          //                     ),                            
-                                              ],
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(right: 20,left: 20),
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                          mainAxisAlignment:MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                               Container(
+                                                                                              height: 50,
+                                                                                              child: Image.network(
+                                                                                                
+                                                                                                                                                                      '${MyConstant().domain2}/upload/category/${i[index]['path']}',fit: BoxFit.fill,),
+                                                                                            ),
+                                                                                            Text('${i[index]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
+                                                                  // fontFamily: 'IBM',
+                                                                  fontSize: 10,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: Color(0xffFFFFFF),
+                                                                ),),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      
+                                                                                    );
+                                                    }
+                                                  ),
+                                                    //  Container(
+                                                    //    margin: EdgeInsets.only(right: 10),
+                                                    //                               height: 100,
+                                                    //                               width: 100,
+                                                    //                               decoration: BoxDecoration(
+                                                    //                                 color: Color(0xffFF8158),
+                                                    //                                 borderRadius: BorderRadius.circular(10),
+                                                    //                               ),
+                                                    //                               child: Padding(
+                                                    //                                 padding: const EdgeInsets.only(right: 20,left: 20),
+                                                    //                                 child: Column(
+                                                    //                                   crossAxisAlignment: CrossAxisAlignment.center,
+                                                    //                                   mainAxisAlignment:MainAxisAlignment.center,
+                                                    //                                   children: [
+                                                    //                                     Image.asset(
+                                                    //                                           'assets/home/Rectangle 89.png',
+                                                    //                                     ),
+                                                    //                                     Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
+                                                    //           // fontFamily: 'IBM',
+                                                    //           fontSize: 10,
+                                                    //           fontWeight: FontWeight.w500,
+                                                    //           color: Color(0xffFFFFFF),
+                                                    //         ),),
+                                                    //                                   ],
+                                                    //                                 ),
+                                                    //                               ),
+                                                                                  
+                                                    //                             ),
+                                                            //                      Container(
+                                                            //                        margin: EdgeInsets.only(right: 10),
+                                                            //                       height: 100,
+                                                            //                       width: 100,
+                                                            //                       decoration: BoxDecoration(
+                                                            //                         color: Color(0xffFAAB35),
+                                                            //                         borderRadius: BorderRadius.circular(10),
+                                                            //                       ),
+                                                            //                       child: Padding(
+                                                            //                         padding: const EdgeInsets.only(right: 20,left: 20),
+                                                            //                         child: Column(
+                                                            //                           crossAxisAlignment: CrossAxisAlignment.center,
+                                                            //                           mainAxisAlignment:MainAxisAlignment.center,
+                                                            //                           children: [
+                                                            //                             Image.asset(
+                                                            //                                   'assets/home/Rectangle 89.png',
+                                                            //                             ),
+                                                            //                             Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
+                                                            //   // fontFamily: 'IBM',
+                                                            //   fontSize: 10,
+                                                            //   fontWeight: FontWeight.w500,
+                                                            //   color: Color(0xffFFFFFF),
+                                                            // ),),
+                                                            //                           ],
+                                                            //                         ),
+                                                            //                       ),
+                                                                                  
+                                                            //                     ),                            
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
 
@@ -729,123 +742,129 @@ bool DD = true;
                                    :Container(
                                       margin: EdgeInsets.only(top: 10),
                                              height: 100,
-                               
-                                    child: ListView.builder(
-                                           physics: BouncingScrollPhysics(),
-                                           scrollDirection: Axis.horizontal,
-                                                                  shrinkWrap: true,
-                                                                  itemCount: i.length,
-                                         itemBuilder: (context, index)  {
-                                        if(index > 2){
-                                      return  InkWell(
-                                                 onTap: () async{
-                                          Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
-                                               builder: (_) =>Buy_Again(index:2,id_type_animal:i[index]['id'].toString(),id_type_animalname:i[index]['name'].toString()) ),);
-                                       if (navigationResult != null ) {
-                                  
-                                       }
-                                     },
-                                          child: Container(
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Builder(
-                                                  builder: (context) {
-                                                    return Container(
-                                                      margin: EdgeInsets.only(right: 10),
-                                                                                    height: 100,
-                                                                                    width: 100,
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: Color(0xffE05C45),
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.only(right: 20,left: 20),
-                                                                                      child: Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                        mainAxisAlignment:MainAxisAlignment.center,
-                                                                                        children: [
-                                                                                          Image.asset(
-                                                                                                'assets/home/Rectangle 89.png',
-                                                                                          ),
-                                                                                          Text('${i[index]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
-                                                                // fontFamily: 'IBM',
-                                                                fontSize: 10,
-                                                                fontWeight: FontWeight.w500,
-                                                                color: Color(0xffFFFFFF),
-                                                              ),),
-                                                                                        ],
+                                  width: screenW*1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 40),
+                                      child: ListView.builder(
+                                             physics: BouncingScrollPhysics(),
+                                             scrollDirection: Axis.horizontal,
+                                                                    shrinkWrap: true,
+                                                                    itemCount: i.length,
+                                           itemBuilder: (context, index)  {
+                                          if(index > 2){
+                                        return  InkWell(
+                                                   onTap: () async{
+                                            Map<String, dynamic>  navigationResult = await Navigator.push(context,MaterialPageRoute(
+                                                 builder: (_) =>Buy_Again(index:2,id_type_animal:i[index]['id'].toString(),id_type_animalname:i[index]['name'].toString()) ),);
+                                         if (navigationResult != null ) {
+                                                                      
+                                         }
+                                       },
+                                            child: Container(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Builder(
+                                                    builder: (context) {
+                                                      return Container(
+                                                        margin: EdgeInsets.only(right: 10),
+                                                                                      height: 100,
+                                                                                      width: 100,
+                                                                                      decoration: BoxDecoration(
+                                                                                        color: Color(0xffE05C45),
+                                                                                        borderRadius: BorderRadius.circular(10),
                                                                                       ),
-                                                                                    ),
-                                                                                    
-                                                                                  );
-                                                  }
-                                                ),
-                                                  //  Container(
-                                                  //    margin: EdgeInsets.only(right: 10),
-                                                  //                               height: 100,
-                                                  //                               width: 100,
-                                                  //                               decoration: BoxDecoration(
-                                                  //                                 color: Color(0xffFF8158),
-                                                  //                                 borderRadius: BorderRadius.circular(10),
-                                                  //                               ),
-                                                  //                               child: Padding(
-                                                  //                                 padding: const EdgeInsets.only(right: 20,left: 20),
-                                                  //                                 child: Column(
-                                                  //                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                                  //                                   mainAxisAlignment:MainAxisAlignment.center,
-                                                  //                                   children: [
-                                                  //                                     Image.asset(
-                                                  //                                           'assets/home/Rectangle 89.png',
-                                                  //                                     ),
-                                                  //                                     Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
-                                                  //           // fontFamily: 'IBM',
-                                                  //           fontSize: 10,
-                                                  //           fontWeight: FontWeight.w500,
-                                                  //           color: Color(0xffFFFFFF),
-                                                  //         ),),
-                                                  //                                   ],
-                                                  //                                 ),
-                                                  //                               ),
-                                                                                
-                                                  //                             ),
-                                                          //                      Container(
-                                                          //                        margin: EdgeInsets.only(right: 10),
-                                                          //                       height: 100,
-                                                          //                       width: 100,
-                                                          //                       decoration: BoxDecoration(
-                                                          //                         color: Color(0xffFAAB35),
-                                                          //                         borderRadius: BorderRadius.circular(10),
-                                                          //                       ),
-                                                          //                       child: Padding(
-                                                          //                         padding: const EdgeInsets.only(right: 20,left: 20),
-                                                          //                         child: Column(
-                                                          //                           crossAxisAlignment: CrossAxisAlignment.center,
-                                                          //                           mainAxisAlignment:MainAxisAlignment.center,
-                                                          //                           children: [
-                                                          //                             Image.asset(
-                                                          //                                   'assets/home/Rectangle 89.png',
-                                                          //                             ),
-                                                          //                             Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
-                                                          //   // fontFamily: 'IBM',
-                                                          //   fontSize: 10,
-                                                          //   fontWeight: FontWeight.w500,
-                                                          //   color: Color(0xffFFFFFF),
-                                                          // ),),
-                                                          //                           ],
-                                                          //                         ),
-                                                          //                       ),
-                                                                                
-                                                          //                     ),                            
-                                              ],
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(right: 20,left: 20),
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                          mainAxisAlignment:MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Container(
+                                                                                              height: 50,
+                                                                                              child: Image.network(
+                                                                                                
+                                                                                                                                                                      '${MyConstant().domain2}/upload/category/${i[index]['path']}',fit: BoxFit.fill,),
+                                                                                            ),
+                                                                                            Text('${i[index]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
+                                                                  // fontFamily: 'IBM',
+                                                                  fontSize: 10,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: Color(0xffFFFFFF),
+                                                                ),),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      
+                                                                                    );
+                                                    }
+                                                  ),
+                                                    //  Container(
+                                                    //    margin: EdgeInsets.only(right: 10),
+                                                    //                               height: 100,
+                                                    //                               width: 100,
+                                                    //                               decoration: BoxDecoration(
+                                                    //                                 color: Color(0xffFF8158),
+                                                    //                                 borderRadius: BorderRadius.circular(10),
+                                                    //                               ),
+                                                    //                               child: Padding(
+                                                    //                                 padding: const EdgeInsets.only(right: 20,left: 20),
+                                                    //                                 child: Column(
+                                                    //                                   crossAxisAlignment: CrossAxisAlignment.center,
+                                                    //                                   mainAxisAlignment:MainAxisAlignment.center,
+                                                    //                                   children: [
+                                                    //                                     Image.asset(
+                                                    //                                           'assets/home/Rectangle 89.png',
+                                                    //                                     ),
+                                                    //                                     Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
+                                                    //           // fontFamily: 'IBM',
+                                                    //           fontSize: 10,
+                                                    //           fontWeight: FontWeight.w500,
+                                                    //           color: Color(0xffFFFFFF),
+                                                    //         ),),
+                                                    //                                   ],
+                                                    //                                 ),
+                                                    //                               ),
+                                                                                  
+                                                    //                             ),
+                                                            //                      Container(
+                                                            //                        margin: EdgeInsets.only(right: 10),
+                                                            //                       height: 100,
+                                                            //                       width: 100,
+                                                            //                       decoration: BoxDecoration(
+                                                            //                         color: Color(0xffFAAB35),
+                                                            //                         borderRadius: BorderRadius.circular(10),
+                                                            //                       ),
+                                                            //                       child: Padding(
+                                                            //                         padding: const EdgeInsets.only(right: 20,left: 20),
+                                                            //                         child: Column(
+                                                            //                           crossAxisAlignment: CrossAxisAlignment.center,
+                                                            //                           mainAxisAlignment:MainAxisAlignment.center,
+                                                            //                           children: [
+                                                            //                             Image.asset(
+                                                            //                                   'assets/home/Rectangle 89.png',
+                                                            //                             ),
+                                                            //                             Text('${i[0]['name'].toString()}',textScaleFactor: 1.0,style: TextStyle(
+                                                            //   // fontFamily: 'IBM',
+                                                            //   fontSize: 10,
+                                                            //   fontWeight: FontWeight.w500,
+                                                            //   color: Color(0xffFFFFFF),
+                                                            // ),),
+                                                            //                           ],
+                                                            //                         ),
+                                                            //                       ),
+                                                                                  
+                                                            //                     ),                            
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                        }
-                                        else{
-                                          return Container();
-                                        }
-                                      },
+                                          );
+                                          }
+                                          else{
+                                            return Container();
+                                          }
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -918,15 +937,13 @@ bool DD = true;
                                                                       children: [
                                                                         Expanded(
                                                                           child: Image.network(
-                                                                          '${MyConstant().domain2}/${item['path_img']}',
-                                                                          // height: 70,
-                                                                                                                                          ),
+                                                                          '${MyConstant().domain2}/${item['path_img']}',),
                                                                         ),
                                                                         Row(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
                                                                             Expanded(
-                                                                              child: Text('${item['size_name']}',textScaleFactor: 1.0,
+                                                                              child: Text('${item['size_name']} (${item['name']})',textScaleFactor: 1.0,
                                                                                                                                                       
                                                                               overflow: TextOverflow.ellipsis,
                                                                                 maxLines: 1,

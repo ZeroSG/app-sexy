@@ -25,10 +25,13 @@ class _APP_taxState extends State<APP_tax> {
         loading = true;
       
       });
-
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/city');
        var ressum = await http.get(uri,
-      
+      headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -60,9 +63,13 @@ class _APP_taxState extends State<APP_tax> {
         setState(() {
        
       });
-
+         SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_amupurs');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_province':city.toString()
        }
@@ -105,10 +112,14 @@ class _APP_taxState extends State<APP_tax> {
   late  List<dynamic>? get_tambonss = [];
   Future<void> get_tambons(var ampurs) async {
     try {
-   
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
 
       var uri = Uri.parse('${MyConstant().domain}/get_tambons');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_ampurs':ampurs.toString()
        }
@@ -666,12 +677,14 @@ class _APP_taxState extends State<APP_tax> {
     try {
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String user_id = preferences.getString('id').toString();
-     
+ 
+       String access_token = preferences.getString('access_token').toString();
       var url = Uri.parse('${MyConstant().domain}/add_tax');
       EasyLoading.show(status: 'กำลังเพิ่มข้อมูล');
 
       
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       response.fields['id_user'] =  user_id;
       response.fields['name_tax'] =  _name.text;
         response.fields['number_tax'] =  _phone.text;

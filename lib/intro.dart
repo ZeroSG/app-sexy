@@ -30,9 +30,13 @@ class _IntroHomeState extends State<IntroHome> {
       setState(() {
         loading = true;
       });
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_logo');
        var ressum = await http.get(uri,
-      
+      headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -94,7 +98,7 @@ class _IntroHomeState extends State<IntroHome> {
           : Padding(
             padding: const EdgeInsets.all(30.0),
             child: Image.network(
-                    'https://fern.orangeworkshop.info/sexy/public/upload/logo/$logo',
+                    '${MyConstant().domain2}/upload/logo/$logo',
                     // width:double.infinity,
                     // width: MediaQuery.of(context).size.width,
                     // height: MediaQuery.of(context).size.height,
@@ -148,9 +152,14 @@ class _IntroHomeState extends State<IntroHome> {
 
    Future<void> login(var Username,var password) async {
     try {
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       EasyLoading.show(status: 'กำลังตรวจสอบข้อมูล');
       var uri = Uri.parse('${MyConstant().domain}/login');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          "email": Username,
          "password": password,  

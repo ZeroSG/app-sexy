@@ -13,6 +13,7 @@ import '../../../Home_Start.dart';
 import '../../../my_constant.dart';
 import '../../register/register4.dart';
 import '../menu.dart';
+import 'otpaccount.dart';
 
 class Account_Settings extends StatefulWidget {
   const Account_Settings({super.key});
@@ -27,7 +28,15 @@ class _Account_SettingsState extends State<Account_Settings> {
   late TextEditingController _email = TextEditingController();
   late TextEditingController _gender = TextEditingController();
   late TextEditingController _birthday = TextEditingController();
-   
+    Map<String,dynamic> data = {
+            'user_id' : '',
+            'name' : '',
+            'email' : '',
+            'phone' : '',
+            'birthday' : '',
+            'gender' : '',
+              'fileimg' : null,
+       };
    String name = '';
    String img = '';
    bool loading = true;
@@ -45,11 +54,12 @@ late  Map<String,dynamic> users;
     
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String user_id = preferences.getString('id').toString();
+       String access_token = preferences.getString('access_token').toString();
     var uri = Uri.parse('${MyConstant().domain}/show_user');
     var ressum = await http.post(uri,
-        // headers: {
-        //   // "Content-Type": "application/json",
-        // },
+      headers: {
+       "Authorization":access_token
+      },
         body: {
           "id_user": user_id.toString(),
         });
@@ -82,6 +92,17 @@ late  Map<String,dynamic> users;
         }else{
            now = DateTime.parse(_birthday.text);
         }
+
+         data = {
+            'user_id' : '',
+            'name' : '',
+            'email' : users['email'].toString(),
+            'phone' : users['phone'].toString(),
+            
+            'birthday' : '',
+            'gender' : '',
+              'fileimg' : null,
+       };
        
       // for (var data in lnformation['data']) {
       //   mergedData.addAll(data[0]);
@@ -960,58 +981,76 @@ show_user();
     try {
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String user_id = preferences.getString('id').toString();
-
-      var url = Uri.parse('${MyConstant().domain}/edit_account');
-      EasyLoading.show(status: 'กำลังแก้ไขข้อมูล');
-      print('user_id===>${user_id}') ;
-      print('_name.text===>${_name.text}') ;
-      print('_email.text===>${_email.text}') ;
-      print('_phone.text===>${_phone.text}') ;
-      print('_genders===>${_genders['nameEN']}') ;
-       print('birthday===>${_birthday.text}') ;
-       print('fileimg===>${fileimg}') ;
+       
+       EasyLoading.show(status: 'กำลังแก้ไขข้อมูล');
+       Map<String,dynamic> data0 = {
+            'user_id' : user_id,
+            'name' : _name.text,
+              'email1' : _email.text,
+            'phone1' : _phone.text,
+            'email' : data['email'],
+            'phone' : data['phone'],
+            'birthday' : _birthday.text,
+            'gender' : _genders['nameEN'],
+              'fileimg' : fileimg,
+       };
+          EasyLoading.showSuccess('การุณายืนยัน otp').then((value)async {
+            print(data0);
+             MaterialPageRoute route = MaterialPageRoute(
+                                  builder: (context) => otpaccount(User:data0,));
+                              Navigator.push(context, route);
+          });
+    //   var url = Uri.parse('${MyConstant().domain}/edit_account');
+    //   EasyLoading.show(status: 'กำลังแก้ไขข้อมูล');
+    //   print('user_id===>${user_id}') ;
+    //   print('_name.text===>${_name.text}') ;
+    //   print('_email.text===>${_email.text}') ;
+    //   print('_phone.text===>${_phone.text}') ;
+    //   print('_genders===>${_genders['nameEN']}') ;
+    //    print('birthday===>${_birthday.text}') ;
+    //    print('fileimg===>${fileimg}') ;
       
-      var response = await http.MultipartRequest('POST', url);
-      response.fields['id'] =  user_id;
-      response.fields['name'] =  _name.text;
-       response.fields['email'] =  _email.text;
-        response.fields['phone'] =  _phone.text;
-        response.fields['birthday'] =  _birthday.text;
-           response.fields['gender'] =  _genders['nameEN'];
+    //   var response = await http.MultipartRequest('POST', url);
+    //   response.fields['id'] =  user_id;
+    //   response.fields['name'] =  _name.text;
+    //    response.fields['email'] =  _email.text;
+    //     response.fields['phone'] =  _phone.text;
+    //     response.fields['birthday'] =  _birthday.text;
+    //        response.fields['gender'] =  _genders['nameEN'];
       
         
       
      
-        if (fileimg != null) {
+    //     if (fileimg != null) {
 
-        String fileNameImageSelfie =
-            fileimg!.path.split('/').last;
-        response.files.add(await http.MultipartFile.fromPath(
-            'path',
-            fileimg!.path,
-            filename: fileNameImageSelfie));
-              print('path');
-      }else{
+    //     String fileNameImageSelfie =
+    //         fileimg!.path.split('/').last;
+    //     response.files.add(await http.MultipartFile.fromPath(
+    //         'path',
+    //         fileimg!.path,
+    //         filename: fileNameImageSelfie));
+    //           print('path');
+    //   }else{
     
-      }
+    //   }
     
      
       
 
-      var res = await response.send();
-      print(res.statusCode);
-      // print(jsonDecode(response!.body));
-      if (res.statusCode == 200) {
-        EasyLoading.showSuccess('บันทึกข้อมูลสำเร็จ').then((value)async {
-            routToService();
-        });
-      } else {
-        var response = await http.Response.fromStream(res);
-        var jsonResponse =
-            await jsonDecode(response.body) as Map<String, dynamic>;
-        printWrapped(jsonResponse['message'].toString());
-        EasyLoading.showError(jsonResponse['message'].toString());
-      }
+    //   var res = await response.send();
+    //   print(res.statusCode);
+    //   // print(jsonDecode(response!.body));
+    //   if (res.statusCode == 200) {
+    //     EasyLoading.showSuccess('บันทึกข้อมูลสำเร็จ').then((value)async {
+    //         routToService();
+    //     });
+    //   } else {
+    //     var response = await http.Response.fromStream(res);
+    //     var jsonResponse =
+    //         await jsonDecode(response.body) as Map<String, dynamic>;
+    //     printWrapped(jsonResponse['message'].toString());
+    //     EasyLoading.showError(jsonResponse['message'].toString());
+    //   }
     } catch (error) {
       printWrapped(error.toString());
       EasyLoading.showError(error.toString());
@@ -1027,12 +1066,13 @@ show_user();
     try {
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String user_id = preferences.getString('id').toString();
-
+       String access_token = preferences.getString('access_token').toString();
       var url = Uri.parse('${MyConstant().domain}/delete_account');
       EasyLoading.show(status: 'กำลังลบข้อมูล');
 
       
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       response.fields['id'] =  user_id;
 
       var res = await response.send();

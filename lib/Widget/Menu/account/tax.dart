@@ -27,10 +27,14 @@ class _taxState extends State<tax> {
       setState(() {
         loading = true;
       });
-       SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_tax_address');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id
        }
@@ -160,8 +164,7 @@ class _taxState extends State<tax> {
                                                            color:  show_taxs[index]['status'] == 'active' ? Color(0xffEFEFEF):Color(0xffFFFFFF),
                                                            child: Padding(
                                                              padding: const EdgeInsets.all(20.0),
-                                                             child: Expanded(
-                                                                   child: Row(
+                                                             child: Row(
                                                                      children: [
                                                                        Expanded(
                                                                          child: Column(
@@ -255,7 +258,7 @@ class _taxState extends State<tax> {
                                                                                             ),
                                                                      ],
                                                                    ),
-                                                                 ),
+                                                                 
                                                                  
                                                             
                                                            ),

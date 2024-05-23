@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Style/style.dart';
 import '../../my_constant.dart';
@@ -73,7 +74,7 @@ bool isChecked = false;
              ),
               Padding(
                 padding: const EdgeInsets.only(right: 30,left: 30,top: 30),
-                child: Expanded(child: Container(
+                child: Container(
                    child: Column(
                      children: [
                       GestureDetector(
@@ -191,9 +192,7 @@ bool isChecked = false;
                                 if(isChecked == false){
                                 sendEmail();
                                 }else{
-                                MaterialPageRoute route = MaterialPageRoute(
-                                  builder: (context) => register3(User:User,Code:Code,isChecked: isChecked,));
-                              Navigator.push(context, route);
+                                sendMobile();
         
                                 }
                              
@@ -220,7 +219,7 @@ bool isChecked = false;
                    ),   
                      ],
                    ),
-                 )),
+                 )
               ),
                Container(
                         //    alignment: Alignment.bottomLeft,
@@ -243,9 +242,10 @@ bool isChecked = false;
       setState(() {
         loading = true;
       });
+   
       var uri = Uri.parse('${MyConstant().domain}/sendEmail');
        var ressum = await http.post(uri,
-        body: {
+       body: {
          'email': '${User!['email']}'
        }
             );
@@ -275,4 +275,48 @@ bool isChecked = false;
       print('e ===>1 ${e.toString()} ');
     }
   }
+
+
+    Future<void> sendMobile() async {
+    try {
+      setState(() {
+        loading = true;
+      });
+
+      var uri = Uri.parse('${MyConstant().domain}/sendMobile');
+       var ressum = await http.post(uri,
+       body: {
+         'phone': '${User!['phone']}'
+       }
+            );
+              
+      if(ressum.statusCode == 200){
+          var  lnformation  = jsonDecode(ressum.body);
+
+        setState(() {
+         Code  =lnformation['data'].toString();
+         print(Code);
+        Map<dynamic, dynamic>? response = json.decode(lnformation['data']['response']);
+
+          loading = false;
+             MaterialPageRoute route = MaterialPageRoute(
+                                  builder: (context) => register3(User:User,isChecked: isChecked,response:response));
+                              Navigator.push(context, route);
+        
+                
+ 
+       
+         
+        });
+          // data_promotion_stores();
+    }else {
+     setState(() {
+         loading = false;
+      });
+    }
+    } catch (e) {
+      print('e ===>1 ${e.toString()} ');
+    }
+  }
+
 }

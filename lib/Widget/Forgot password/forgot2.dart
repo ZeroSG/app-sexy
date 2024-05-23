@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Style/style.dart';
+import '../../my_constant.dart';
 import 'forgot3.dart';
+import 'package:http/http.dart' as http;
 
 
 class forgot2 extends StatefulWidget {
-  const forgot2({super.key});
+  var email;
+   forgot2({super.key,this.email});
 
   @override
   State<forgot2> createState() => _forgot2State();
@@ -23,7 +30,7 @@ class _forgot2State extends State<forgot2> {
           width: MediaQuery.of(context).size.width*1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
             children: [
                Container(
                height: 210,
@@ -88,10 +95,8 @@ class _forgot2State extends State<forgot2> {
                        padding: const EdgeInsets.only(right: 10,left: 10,top: 40),
                        child: TextButton(
                                 onPressed: () {
-                                  
-                                    MaterialPageRoute route = MaterialPageRoute(
-                                    builder: (context) => forgot3());
-                                Navigator.push(context, route);
+                                    createWo();
+                                    
                                   
                                   
                                 },
@@ -117,14 +122,7 @@ class _forgot2State extends State<forgot2> {
                      ),
                 )),
               ),
-              Container(
-                           alignment: Alignment.bottomLeft,
-                           height: 130,
-                           width:  MediaQuery.of(context).size.width*0.5,
-                         child: Image.asset(
-                            'assets/images/Ellipse 39_2.png',
-                          ),
-                       ),
+              
           ]),
         ),
     );
@@ -145,7 +143,7 @@ class _forgot2State extends State<forgot2> {
                         child: TextField(
                            controller: controller,
                           keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(color: Color(0xffEFEFEF)),
+                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           decoration: InputDecoration(
                             filled: true,
                             contentPadding: EdgeInsets.only(top: 10,left: 20),
@@ -169,4 +167,52 @@ class _forgot2State extends State<forgot2> {
                       ),
                   );
                   }
+
+
+                   Future createWo() async {
+    try {
+
+      var url = Uri.parse('${MyConstant().domain}/check_email_or_phone');
+      EasyLoading.show(status: 'กำลังตรวจสอบ email หรือ เบอร์โทร');
+
+
+      var response = await http.MultipartRequest('POST', url);
+
+      response.fields['email'] =  widget.email;
+      response.fields['phone'] =  _phoneController.text;
+ 
+
+      var res = await response.send();
+      print(res.statusCode);
+      // print(jsonDecode(response!.body));
+      if (res.statusCode == 200) {
+          var response = await http.Response.fromStream(res);
+        var jsonResponse =
+            await jsonDecode(response.body) as Map<String, dynamic>;
+            print(widget.email);
+                print(_phoneController.text);
+        EasyLoading.showSuccess('ตรวจสอบข้อมูลสำเร็จ').then((value)async {
+MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (context) => forgot3(email:widget.email,phone:_phoneController.text));
+                                Navigator.push(context, route);
+        });
+      } else {
+        var response = await http.Response.fromStream(res);
+        var jsonResponse =
+            await jsonDecode(response.body) as Map<String, dynamic>;
+        printWrapped(jsonResponse['message'].toString());
+        EasyLoading.showError(jsonResponse['message'].toString());
+      }
+    } catch (error) {
+      printWrapped(error.toString());
+      EasyLoading.showError(error.toString());
+    }
+
+   
+  }
+
+   void printWrapped(String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  }
 }

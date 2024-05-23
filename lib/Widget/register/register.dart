@@ -235,10 +235,10 @@ bool isChecked = false;
                                   margin: EdgeInsets.only(left: 20),
                                    width: 40,
                                  child: Image.asset(
-                                                             'assets/images/Apple Login.jpg',
+                                                             'assets/images/Group 1.png',
                                                            ),
                                ),
-                            Text('เข้าสู่ระบบด้วย Apple ',style: textblack131,),
+                            Text('เข้าสู่ระบบด้วย Facebook ',style: textblack131,),
                             Container(
                                margin: EdgeInsets.only(right: 30),
                               width: 20,

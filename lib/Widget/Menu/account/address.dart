@@ -25,10 +25,16 @@ class _addressState extends State<address> {
       setState(() {
         loading = true;
       });
+      
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String user_id = preferences.getString('id').toString();
+
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_address');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id
        }
@@ -158,8 +164,7 @@ class _addressState extends State<address> {
                                                            color:  show_addresss[index]['status'] == 'active' ? Color(0xffEFEFEF):Color(0xffFFFFFF),
                                                            child: Padding(
                                                              padding: const EdgeInsets.all(20.0),
-                                                             child: Expanded(
-                                                                   child: Row(
+                                                             child: Row(
                                                                      children: [
                                                                        Expanded(
                                                                          child: Column(
@@ -248,7 +253,7 @@ class _addressState extends State<address> {
                                                             
                                                            ),
                                                          ),
-                                                       ),
+                                                       
                     );
                   }
                 ),

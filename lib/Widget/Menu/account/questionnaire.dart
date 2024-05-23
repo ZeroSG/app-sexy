@@ -192,7 +192,8 @@ class _QuestionnaireState extends State<Questionnaire> {
 
   Future createWo() async {
     try {
-       SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
 
       var url = Uri.parse('${MyConstant().domain}/form_question');
@@ -200,6 +201,7 @@ class _QuestionnaireState extends State<Questionnaire> {
 
       
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       response.fields['id_user'] =  user_id;
       response.fields['text'] =  _text.text;
       var res = await response.send();

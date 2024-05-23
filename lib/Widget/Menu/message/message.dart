@@ -28,10 +28,14 @@ class _MessageState extends State<Message> {
         loading = true;
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
            name = preferences.getString('name').toString();
             logo = preferences.getString('logo').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_news');
        var ressum = await http.get(uri
+       ,headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -104,8 +108,8 @@ class _MessageState extends State<Message> {
                               child: Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child: Container(
-                                  height: 40,
-                                  width: 40,
+                                   height: 60,
+                                  width: 60,
                                   child: logo == '' || logo == 'null' ?Image.asset(
                                         'assets/home/Rectangle 17.png',
                                       ):ClipRRect(  borderRadius: BorderRadius.circular(50),child: Image.network(logo)),

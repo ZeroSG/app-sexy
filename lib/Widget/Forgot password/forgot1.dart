@@ -23,7 +23,7 @@ class _forgot1State extends State<forgot1> {
           width: MediaQuery.of(context).size.width*1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
             children: [
                Container(
                height: 210,
@@ -88,9 +88,9 @@ class _forgot1State extends State<forgot1> {
                        padding: const EdgeInsets.only(right: 10,left: 10,top: 40),
                        child: TextButton(
                                 onPressed: () {
-                                  
+                                   
                                     MaterialPageRoute route = MaterialPageRoute(
-                                    builder: (context) => forgot2());
+                                    builder: (context) => forgot2(email:_emailController.text));
                                 Navigator.push(context, route);
                                   
                                   
@@ -117,14 +117,7 @@ class _forgot1State extends State<forgot1> {
                      ),
                 )),
               ),
-              Container(
-                           alignment: Alignment.bottomLeft,
-                           height: 130,
-                           width:  MediaQuery.of(context).size.width*0.5,
-                         child: Image.asset(
-                            'assets/images/Ellipse 39_2.png',
-                          ),
-                       ),
+              
           ]),
         ),
     );
@@ -145,7 +138,7 @@ class _forgot1State extends State<forgot1> {
                         child: TextField(
                            controller: controller,
                           keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(color: Color(0xffEFEFEF)),
+                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           decoration: InputDecoration(
                             filled: true,
                             contentPadding: EdgeInsets.only(top: 10,left: 20),

@@ -28,9 +28,13 @@ class _order_addState extends State<order_add> {
         loading = true;
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_address');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id
        }
@@ -92,9 +96,7 @@ class _order_addState extends State<order_add> {
                         Container(
                 width: screenW * 1,
                 height: screenW * 1,
-                child: Center(child: CircularProgressIndicator())):SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
+                child: Center(child: CircularProgressIndicator())): Container(
           // color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(28.0),
@@ -137,129 +139,130 @@ class _order_addState extends State<order_add> {
                           ],
                         ),
                       ),
-                ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: show_addresss.length,
-                  
-                              //   separatorBuilder:  (context, index) {
-                  
-                              //   return const SizedBox(width: 2,);
-                  
-                              // },
-                  
-                              itemBuilder: (context, index) {
-                    return InkWell(
-                       onTap: () async{
-                         print(show_addresss[index]['id'].toString());
-                                change_address(widget.order_no.toString(),show_addresss[index]['id'].toString());
-                               },
-                      child: Padding(
-                                                         padding: const EdgeInsets.only(top: 10),
-                                                         child: Container(
-                                                           width: screenW*1,
-                                                           color:  show_addresss[index]['status'] == 'active' ? Color(0xffEFEFEF):Color(0xffFFFFFF),
-                                                           child: Padding(
-                                                             padding: const EdgeInsets.all(20.0),
-                                                             child: Expanded(
-                                                                   child: Row(
-                                                                     children: [
-                                                                       Expanded(
-                                                                         child: Column(
-                                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                         children: [
-                                                                                                            Container(
-                                                                                                                   child: Text(
-                                                                                                                     '${show_addresss[index]['name']} |  ${show_addresss[index]['phone']}',
-                                                                                                                     textScaleFactor: 1.0,
-                                                                                                                     style: TextStyle(
-                                                                                                                         color: Color(0xff1E1E1E),
-                                                                                                                         fontSize: 14,
-                                                                                                                         fontWeight: FontWeight.w500),
-                                                                                                                   ),
-                                                                                                                 ),
-                                                                                                                  Container(
-                                                                                                                   child: Text(
-                                                                                                                     '${show_addresss[index]['address']} ถนน ${show_addresss[index]['streetAddress']}  ${show_addresss[index]['subdistrict']}  ${show_addresss[index]['district']}  ${show_addresss[index]['province']} ${show_addresss[index]['postcode']}',
-                                                                                                                     textScaleFactor: 1.0,
-                                                                                                                     style: TextStyle(
-                                                                                                                         color: Color(0xff979696),
-                                                                                                                         fontSize: 14,
-                                                                                                                         fontWeight: FontWeight.w500),
-                                                                                                                   ),
-                                                                                                                 ),
-                                                                                                                 
-                                                                                                                 show_addresss[index]['status'] == 'active' ? Container(
-                                                                                                                    margin: EdgeInsets.only(top: 5),
-                                                                                                                    color: Color(0xffFAAB35),
-                                                                                                                   child: Padding(
-                                                                                                                     padding: const EdgeInsets.all(8.0),
+                Expanded(
+                  child: ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: show_addresss.length,
+                    
+                                //   separatorBuilder:  (context, index) {
+                    
+                                //   return const SizedBox(width: 2,);
+                    
+                                // },
+                    
+                                itemBuilder: (context, index) {
+                      return InkWell(
+                         onTap: () async{
+                           print(show_addresss[index]['id'].toString());
+                                  change_address(widget.order_no.toString(),show_addresss[index]['id'].toString());
+                                 },
+                        child: Padding(
+                                                           padding: const EdgeInsets.only(top: 10),
+                                                           child: Container(
+                                                             width: screenW*1,
+                                                             color:  show_addresss[index]['status'] == 'active' ? Color(0xffEFEFEF):Color(0xffFFFFFF),
+                                                             child: Padding(
+                                                               padding: const EdgeInsets.all(20.0),
+                                                               child:  Row(
+                                                                       children: [
+                                                                         Expanded(
+                                                                           child: Column(
+                                                                                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                           children: [
+                                                                                                              Container(
                                                                                                                      child: Text(
-                                                                                                                       'ค่าเริ่มต้น',
+                                                                                                                       '${show_addresss[index]['name']} |  ${show_addresss[index]['phone']}',
                                                                                                                        textScaleFactor: 1.0,
                                                                                                                        style: TextStyle(
-                                                                                                                           color: Color(0xffFFFFFF),
-                                                                                                                           fontSize: 13,
+                                                                                                                           color: Color(0xff1E1E1E),
+                                                                                                                           fontSize: 14,
                                                                                                                            fontWeight: FontWeight.w500),
                                                                                                                      ),
                                                                                                                    ),
-                                                                                                                 ):Container(),
-                                                                       
-                                                                                                         ],
+                                                                                                                    Container(
+                                                                                                                     child: Text(
+                                                                                                                       '${show_addresss[index]['address']} ถนน ${show_addresss[index]['streetAddress']}  ${show_addresss[index]['subdistrict']}  ${show_addresss[index]['district']}  ${show_addresss[index]['province']} ${show_addresss[index]['postcode']}',
+                                                                                                                       textScaleFactor: 1.0,
+                                                                                                                       style: TextStyle(
+                                                                                                                           color: Color(0xff979696),
+                                                                                                                           fontSize: 14,
+                                                                                                                           fontWeight: FontWeight.w500),
+                                                                                                                     ),
+                                                                                                                   ),
+                                                                                                                   
+                                                                                                                   show_addresss[index]['status'] == 'active' ? Container(
+                                                                                                                      margin: EdgeInsets.only(top: 5),
+                                                                                                                      color: Color(0xffFAAB35),
+                                                                                                                     child: Padding(
+                                                                                                                       padding: const EdgeInsets.all(8.0),
+                                                                                                                       child: Text(
+                                                                                                                         'ค่าเริ่มต้น',
+                                                                                                                         textScaleFactor: 1.0,
+                                                                                                                         style: TextStyle(
+                                                                                                                             color: Color(0xffFFFFFF),
+                                                                                                                             fontSize: 13,
+                                                                                                                             fontWeight: FontWeight.w500),
+                                                                                                                       ),
+                                                                                                                     ),
+                                                                                                                   ):Container(),
+                                                                         
+                                                                                                           ],
+                                                                           ),
                                                                          ),
-                                                                       ),
-                                                                        InkWell(
-                                                                                              onTap: ()async {
-                                                                                               var navigationResult = await Navigator.push(context,MaterialPageRoute(
-                                         builder: (_) =>EDIT_address(date:show_addresss[index]) ),);
-                                 if (navigationResult == null ) {
-                                    show_address();
-                                 }
-                                                                                              },
-                                                                                              child: Container(
-                                                                                               width: 60,
-                                                                                                margin: EdgeInsets.only(right: 5),
-                                                                                                decoration: BoxDecoration(
-                                                                                                                                                color: Color.fromARGB(255, 255, 255, 255) ,
-                                                                                                                                                border: Border.all(
-                                                                                                color: Color(0xffBD2325) ,
-                                                                                                width: 1),
-                                                                                                                                                borderRadius:
-                                                                                                                                                    BorderRadius.circular(50),
-                                                                                                ),
-                                                                                                child: Padding(
-                                                                                                                                                padding: const EdgeInsets.only(right: 8,left: 8,top: 8,bottom: 8),
-                                                                                                                                                child: Center(
-                                                                                                                                                  child: Text(
-                                                                                                                                                    'แก้ไข',
-                                                                                                                                                    textScaleFactor: 1.0,
-                                                                                                                                                    style: TextStyle(
-                                                                                                                                                      // fontFamily: 'IBM',
-                                                                                                                                                      fontSize: 12,
-                                                                                                                                                      fontWeight: FontWeight.w600,
-                                                                                                                                                      color: Color(0xffBD2325) ,
+                                                                          InkWell(
+                                                                                                onTap: ()async {
+                                                                                                 var navigationResult = await Navigator.push(context,MaterialPageRoute(
+                                           builder: (_) =>EDIT_address(date:show_addresss[index]) ),);
+                                   if (navigationResult == null ) {
+                                      show_address();
+                                   }
+                                                                                                },
+                                                                                                child: Container(
+                                                                                                 width: 60,
+                                                                                                  margin: EdgeInsets.only(right: 5),
+                                                                                                  decoration: BoxDecoration(
+                                                                                                                                                  color: Color.fromARGB(255, 255, 255, 255) ,
+                                                                                                                                                  border: Border.all(
+                                                                                                  color: Color(0xffBD2325) ,
+                                                                                                  width: 1),
+                                                                                                                                                  borderRadius:
+                                                                                                                                                      BorderRadius.circular(50),
+                                                                                                  ),
+                                                                                                  child: Padding(
+                                                                                                                                                  padding: const EdgeInsets.only(right: 8,left: 8,top: 8,bottom: 8),
+                                                                                                                                                  child: Center(
+                                                                                                                                                    child: Text(
+                                                                                                                                                      'แก้ไข',
+                                                                                                                                                      textScaleFactor: 1.0,
+                                                                                                                                                      style: TextStyle(
+                                                                                                                                                        // fontFamily: 'IBM',
+                                                                                                                                                        fontSize: 12,
+                                                                                                                                                        fontWeight: FontWeight.w600,
+                                                                                                                                                        color: Color(0xffBD2325) ,
+                                                                                                                                                      ),
                                                                                                                                                     ),
                                                                                                                                                   ),
-                                                                                                                                                ),
+                                                                                                  ),
                                                                                                 ),
                                                                                               ),
-                                                                                            ),
-                                                                     ],
-                                                                   ),
-                                                                 ),
-                                                                 
-                                                            
+                                                                       ],
+                                                                     ),
+                                                                   
+                                                                   
+                                                              
+                                                             ),
                                                            ),
                                                          ),
-                                                       ),
-                    );
-                  }
+                      );
+                    }
+                  ),
                 ),
                  
             ],)
           ),
         ),
-      ),
+   
     );
   }
 
@@ -308,13 +311,14 @@ class _order_addState extends State<order_add> {
 
    Future change_address(var order_no,var id_address) async {
     try {
-      print(order_no.toString());
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
              var url = Uri.parse('${MyConstant().domain}/change_address');
       EasyLoading.show(status: 'กำลังยกเลิก');
       
      
       var response = await http.MultipartRequest('POST', url);
-  
+      response.headers['Authorization'] = access_token;
       response.fields['order_no'] =  order_no.toString();
       response.fields['id_address'] =  id_address.toString();
      

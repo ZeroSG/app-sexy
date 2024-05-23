@@ -86,10 +86,13 @@ class _EDIT_taxState extends State<EDIT_tax> {
         loading = true;
       
       });
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/city');
        var ressum = await http.get(uri,
-      
+      headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -145,9 +148,13 @@ class _EDIT_taxState extends State<EDIT_tax> {
      print('5555555 $city');
 
       });
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_amupurs');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_province':city.toString()
        }
@@ -206,9 +213,13 @@ class _EDIT_taxState extends State<EDIT_tax> {
   Future<void> get_tambons(var ampurs) async {
     try {
      print('5555555 $ampurs');
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_tambons');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_ampurs':ampurs.toString()
        }
@@ -277,9 +288,13 @@ class _EDIT_taxState extends State<EDIT_tax> {
         setState(() {
        
       });
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_amupurs');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_province':city.toString()
        }
@@ -323,9 +338,13 @@ class _EDIT_taxState extends State<EDIT_tax> {
   Future<void> get_tambons2(var ampurs) async {
     try {
    
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_tambons');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_ampurs':ampurs.toString()
        }
@@ -930,12 +949,14 @@ class _EDIT_taxState extends State<EDIT_tax> {
    Future createWoDet() async {
     try {
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
      
       var url = Uri.parse('${MyConstant().domain}/delete_tax');
       EasyLoading.show(status: 'กำลังเพิ่มข้อมูล');
 
       
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       response.fields['id'] =  widget.date!['id'].toString();
       
       
@@ -973,12 +994,14 @@ class _EDIT_taxState extends State<EDIT_tax> {
  Future createWo() async {
     try {
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
      
       var url = Uri.parse('${MyConstant().domain}/edit_tax');
       EasyLoading.show(status: 'กำลังเพิ่มข้อมูล');
 
       
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       response.fields['id'] =  widget.date!['id'].toString();
       response.fields['name_tax'] =  _name.text;
         response.fields['number_tax'] =  _phone.text;

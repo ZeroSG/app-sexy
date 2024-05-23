@@ -2,29 +2,31 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../Style/style.dart';
-import '../../my_constant.dart';
-import 'register4.dart';
-import 'package:http/http.dart' as http;
+import '../../../Style/style.dart';
+import '../../../my_constant.dart';
+import '../menu.dart';
 
 
 
-class register3 extends StatefulWidget {
+class otpaccount2 extends StatefulWidget {
     Map<String,dynamic>? User;
+    Map<dynamic, dynamic>? response;
       String? Code;
-      Map<dynamic, dynamic>? response;
       bool? isChecked;
-   register3({super.key,this.User,this.Code,this.isChecked,this.response});
+   otpaccount2({super.key,this.User,this.Code,this.isChecked,this.response});
 
   @override
-  State<register3> createState() => _register3State();
+  State<otpaccount2> createState() => _otpaccount2State();
 }
 
 
 
-class _register3State extends State<register3> {
+class _otpaccount2State extends State<otpaccount2> {
   late TextEditingController _OTP1 = TextEditingController();
   late TextEditingController _OTP2 = TextEditingController();
   late TextEditingController _OTP3 = TextEditingController();
@@ -198,27 +200,48 @@ class _register3State extends State<register3> {
 
 
 
-
-    Future createWo() async {
+ Future createWo() async {
     try {
+       SharedPreferences preferences = await SharedPreferences.getInstance();
 
-     
-      var url = Uri.parse('${MyConstant().domain}/register');
-      EasyLoading.show(status: 'กำลังบันทึกข้อมูล');
+       String user_id = preferences.getString('id').toString();
 
+      var url = Uri.parse('${MyConstant().domain}/edit_account');
+      EasyLoading.show(status: 'กำลังแก้ไขข้อมูล');
+      // print('user_id===>${user_id}') ;
+      // print('_name.text===>${_name.text}') ;
+      // print('_email.text===>${_email.text}') ;
+      // print('_phone.text===>${_phone.text}') ;
+      // print('_genders===>${_genders['nameEN']}') ;
+      //  print('birthday===>${_birthday.text}') ;
+      //  print('fileimg===>${fileimg}') ;
 
+       
+      
       var response = await http.MultipartRequest('POST', url);
 
-      response.fields['name'] =  User!['username'];
-      response.fields['email'] =  User!['email'];
-       response.fields['phone'] =  User!['phone'];
-
-        response.fields['password'] =  User!['password'];
-           response.fields['app'] =  User!['app'];
+      response.fields['id'] =  user_id;
+      response.fields['name'] =  User!['name'];
+       response.fields['email'] =  User!['email1'];
+        response.fields['phone'] =  User!['phone1'];
+        response.fields['birthday'] =  User!['birthday'];
+           response.fields['gender'] =  User!['gender'];
+      
         
       
      
-      
+        if (User!['fileimg'] != null) {
+
+        String fileNameImageSelfie =
+            User!['fileimg']!.path.split('/').last;
+        response.files.add(await http.MultipartFile.fromPath(
+            'path',
+            User!['fileimg']!.path,
+            filename: fileNameImageSelfie));
+              print('path');
+      }else{
+    
+      }
     
      
       
@@ -228,9 +251,7 @@ class _register3State extends State<register3> {
       // print(jsonDecode(response!.body));
       if (res.statusCode == 200) {
         EasyLoading.showSuccess('บันทึกข้อมูลสำเร็จ').then((value)async {
-            MaterialPageRoute route = MaterialPageRoute(
-                                  builder: (context) => register4());
-                              Navigator.push(context, route);
+            routToService();
         });
       } else {
         var response = await http.Response.fromStream(res);
@@ -247,23 +268,24 @@ class _register3State extends State<register3> {
    
   }
 
+  
+
    void printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
      bool loading = true;
-
-       Future<void> ConfirmMobile(var code) async {
+  Future<void> ConfirmMobile(var code) async {
     try {
       setState(() {
         loading = true;
       });
-    
-       
+  
       var uri = Uri.parse('${MyConstant().domain}/ConfirmMobile');
        var ressum = await http.post(uri,
-       body: {
+      
+        body: {
          'otp_code': '${code}',
          'token': '${widget.response!['result']['token'].toString()}'
        }
@@ -315,4 +337,21 @@ class _register3State extends State<register3> {
     }
   }
 
+
+
+  Future routToService() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('name', User!['name']);
+    preferences.setString('email', User!['email1']);
+    preferences.setString('phone', User!['phone1']);
+    preferences.setString('birthday', User!['birthday']);
+    preferences.setString('gender', User!['gender']);
+
+    
+         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                         builder: (context)=>    Menu(index:3),), (route) => false);
+  //  MaterialPageRoute route =
+  //       MaterialPageRoute(builder: (context) => Menu(Data_User:Data_User,index: 0,));
+  //   Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
 }

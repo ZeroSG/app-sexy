@@ -39,9 +39,13 @@ late  List<dynamic> show_carts = [];
         loading = true;
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_cart');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id.toString()
        }
@@ -104,11 +108,14 @@ late  List<dynamic> show_rateprices = [];
       setState(() {
         loading = true;
       });
-       SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_rateprice');
        var ressum = await http.get(uri,
-       
+       headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -587,7 +594,8 @@ if(totalAmount0 == 0){
                                                                                                                       margin: EdgeInsets.only(left: 10),
                                                                                                                       child: Image.network(
                                                                               '${MyConstant().domain2}/${show_carts[index]['image_path']}',
-                                                                                                                      height: 70,),
+                                                                                                                      height: 80,
+                                                                                                                      width: 80,),
                                                                                                                     ),
                                                                                                                 
                                                                                                                  Expanded(
@@ -1025,11 +1033,15 @@ print('object===>$show_rateprices0');
        print(id);
        EasyLoading.show(status: 'กำลังบันทึกข้อมูล');
        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
        String user_id = preferences.getString('id').toString();
         print('id_product_amount==> $id_product_amount');
       print('id_product_amount==> $id');
       var uri = Uri.parse('${MyConstant().domain}/cart');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id,
          'id_product_amount': id_product_amount.toString(),
@@ -1076,9 +1088,13 @@ print('object===>$show_rateprices0');
        EasyLoading.show(status: 'กำลังลบข้อมูล');
  
     
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/delete_cart');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
         //  'id_user': user_id,
         //  'id_product_amount': id_product_amount.toString(),

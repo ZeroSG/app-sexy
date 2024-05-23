@@ -42,10 +42,11 @@ class _forgot6State extends State<forgot6> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Container(
-                                height: 101,
-                                width: 108,
+                                height: 220,
+                                width: 280,
                                 child: Image.asset(
-                                      'assets/images/Ellipse 37.png',
+                                      'assets/images/Screenshot 2024-05-17 095903.png',
+                                      fit: BoxFit.fill,
                                     ),
                               ),
                             ),

@@ -20,13 +20,13 @@ class _register4State extends State<register4> {
         return false;
       },
       child:  Scaffold(
-         backgroundColor: Color(0xffBD2325),
+         backgroundColor: Color(0xffC63A30),
          body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xffBD2325), Color(0xffD34739)],
+              colors: [Color(0xffC63A30), Color(0xffDC63A30)],
             ),
           ),  
           child: Center(
@@ -42,10 +42,11 @@ class _register4State extends State<register4> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Container(
-                                height: 101,
-                                width: 108,
+                                height: 220,
+                                width: 280,
                                 child: Image.asset(
-                                      'assets/images/Ellipse 37.png',
+                                      'assets/images/Screenshot 2024-05-17 095903.png',
+                                      fit: BoxFit.fill,
                                     ),
                               ),
                             ),

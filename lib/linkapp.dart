@@ -15,27 +15,28 @@ import 'my_constant.dart';
 Future<void> checkDeepLink(BuildContext context) async {
      StreamSubscription? _sub;
   try {
-    //print("checkDeepLink123");
+    print("checkDeepLink123 == $_sub");
     // await UniLink.getInitialLink();
    
     _sub = linkStream.listen((String? link) { 
+              print('url ===> $link');
       if (link != null){
 
         // //print('link ===> $link');
         //  MaterialPageRoute route = MaterialPageRoute(
         //                               builder: (context) => SecondPay(link:link));
         //                           Navigator.push(context, route);
-       var url =Uri.parse(link);
+      //  var url =Uri.parse(link);
         // normalDialog(context,'$link','$link');
       //     Navigator.of(context).pop();
   
       // Navigator.pop(context,'SS');
         //print('link ===> ${url.toString()}');
-        if(url == '${MyConstant().domain}/callback'){
+        // Navigator.of(context).pop();
             MaterialPageRoute route = MaterialPageRoute(
             builder: (context) => CartOrder2(index:'2'),);
         Navigator.push(context, route);
-        }
+        
             
       //  if(url.queryParameters['scan_qr'] != null){
       //    //print('link ===> ${url.queryParameters['scan_qr'].toString()}');
@@ -43,6 +44,8 @@ Future<void> checkDeepLink(BuildContext context) async {
       //       //                           builder: (context) => SecondPay(link:url.queryParameters['scan_qr'].toString()));
       //       //                       Navigator.push(context, route);
       //  }
+      }else{
+       
       }
     },onError:(err){
 

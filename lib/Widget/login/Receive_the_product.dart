@@ -154,7 +154,20 @@ bool isChecked = false;
                 ),
                ),
         
-            
+            Expanded(
+              child: Center(
+                child: Container(
+                                  //  height:MediaQuery.of(context).size.height,
+                                   width: 300,
+                                 child: Image.asset('assets/images/หน้าเเรก.Logo_pages-to-jpg-0003.jpg',
+                                 fit: BoxFit.fill,
+                                
+                                                           ),
+                                 
+                               
+                   ),
+              ),
+            ),
              
              
           ],
@@ -174,9 +187,13 @@ bool isChecked = false;
      setState(() {
        loading = true;
      });
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_warehouse');
        var ressum = await http.get(uri,
-     
+     headers: {
+       "Authorization":access_token
+      }
             );
                
       if(ressum.statusCode == 200) {

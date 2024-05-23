@@ -59,8 +59,12 @@ class _Buy_AgainState extends State<Buy_Again> {
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String id_warehousecode = preferences.getString('id_warehousecode').toString();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/filter');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
            "id_type_animal":  widget.id_type_animal.toString(),
          "price":  "",
@@ -103,8 +107,13 @@ class _Buy_AgainState extends State<Buy_Again> {
       });
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String user_id = preferences.getString('id').toString();
+
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/product_user');
        var ressum = await http.post(uri,
+       headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_user': user_id
        }
@@ -233,7 +242,7 @@ class _Buy_AgainState extends State<Buy_Again> {
                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
                                                                                 Expanded(
-                                                                                  child: widget.index.toString() == '1'?Text('${item['name']}',textScaleFactor: 1.0,
+                                                                                  child: widget.index.toString() == '1'?Text('${item['name_size']} (${item['name_product']})',textScaleFactor: 1.0,
                                                                                                                                                           
                                                                                   overflow: TextOverflow.ellipsis,
                                                                                     maxLines: 1,
@@ -242,7 +251,7 @@ class _Buy_AgainState extends State<Buy_Again> {
                                                                                                                               fontWeight: FontWeight.w500,
                                                                                                                               color: Colors.black,
                                                                                                                             ),)
-                                                                                  : Text('${item['size_name']}',textScaleFactor: 1.0,
+                                                                                  : Text('${item['size_name']} (${item['name']})',textScaleFactor: 1.0,
                                                                                                                                                           
                                                                                   overflow: TextOverflow.ellipsis,
                                                                                     maxLines: 1,

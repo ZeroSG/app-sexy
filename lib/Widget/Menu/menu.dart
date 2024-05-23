@@ -36,16 +36,20 @@ class _MenuState extends State<Menu> {
       setState(() {
         loading = true;
       });
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_logo');
        var ressum = await http.get(uri,
-      
+      headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
           var  lnformation  = jsonDecode(ressum.body);
     
         setState(() {
-         logo  ='https://fern.orangeworkshop.info/sexy/public/upload/logo/${lnformation['data']['data'][0]['path']}';
+         logo  ='${MyConstant().domain2}/upload/logo/${lnformation['data']['data'][0]['path']}';
          routToService(logo);
          
        });

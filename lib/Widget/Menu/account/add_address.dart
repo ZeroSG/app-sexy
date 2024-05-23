@@ -25,10 +25,13 @@ class _APP_addressState extends State<APP_address> {
         loading = true;
       
       });
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/city');
        var ressum = await http.get(uri,
-      
+      headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -60,12 +63,15 @@ class _APP_addressState extends State<APP_address> {
         setState(() {
        
       });
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_amupurs');
-       var ressum = await http.post(uri,
+       var ressum = await http.post(uri,headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_province':city.toString()
-       }
+       },
       
             );
           // print(ressum.statusCode);    
@@ -106,9 +112,12 @@ class _APP_addressState extends State<APP_address> {
   Future<void> get_tambons(var ampurs) async {
     try {
    
-
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/get_tambons');
-       var ressum = await http.post(uri,
+       var ressum = await http.post(uri,headers: {
+       "Authorization":access_token
+      },
        body: {
          'id_ampurs':ampurs.toString()
        }
@@ -626,12 +635,14 @@ class _APP_addressState extends State<APP_address> {
     try {
        SharedPreferences preferences = await SharedPreferences.getInstance();
        String user_id = preferences.getString('id').toString();
-     
+
+       String access_token = preferences.getString('access_token').toString();
       var url = Uri.parse('${MyConstant().domain}/add_address');
       EasyLoading.show(status: 'กำลังเพิ่มข้อมูล');
 
       
       var response = await http.MultipartRequest('POST', url);
+      response.headers['Authorization'] = access_token;
       response.fields['id_user'] =  user_id;
       response.fields['name'] =  _name.text;
         response.fields['phone'] =  _phone.text;

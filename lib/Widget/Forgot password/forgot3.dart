@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../Style/style.dart';
 import 'forgot4.dart';
 
 
 class forgot3 extends StatefulWidget {
-  const forgot3({super.key});
+   var email;
+    var phone;
+   forgot3({super.key,this.email,this.phone});
 
   @override
   State<forgot3> createState() => _forgot3State();
@@ -24,7 +27,7 @@ class _forgot3State extends State<forgot3> {
           width: MediaQuery.of(context).size.width*1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
             children: [
                Container(
                height: 210,
@@ -95,17 +98,27 @@ class _forgot3State extends State<forgot3> {
                        padding: const EdgeInsets.only(right: 10,left: 10,top: 40),
                        child: TextButton(
                                 onPressed: () {
-                                  
+                                  if(_passwordController.text == _password2Controller.text){
+                                       Map<String,dynamic> data = {
+                                      'phone':widget.phone.toString(),
+                                      'email':widget.email.toString(),
+                                      'password':_passwordController.text
+                                    };
                                     MaterialPageRoute route = MaterialPageRoute(
-                                    builder: (context) => forgot4());
+                                    builder: (context) => forgot4(data:data));
                                 Navigator.push(context, route);
+                                  }
+                                  else{
+                                    EasyLoading.showError('รหัสผ่านไม่ถูกต้อง' );
+                                  }
+                                   
                                   
                                   
                                 },
                                 child: Container(
                                   height: 40,
                                   alignment: Alignment.center,
-                                
+                                  
                                   child: Text(
                                     'ถัดไป',textScaleFactor: 1.0,
                                     textAlign: TextAlign.center,
@@ -124,14 +137,7 @@ class _forgot3State extends State<forgot3> {
                      ),
                 )),
               ),
-              Container(
-                           alignment: Alignment.bottomLeft,
-                           height: 130,
-                           width:  MediaQuery.of(context).size.width*0.5,
-                         child: Image.asset(
-                            'assets/images/Ellipse 39_2.png',
-                          ),
-                       ),
+             
           ]),
         ),
     );
@@ -152,7 +158,7 @@ class _forgot3State extends State<forgot3> {
                         child: TextField(
                            controller: controller,
                           keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(color: Color(0xffEFEFEF)),
+                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           decoration: InputDecoration(
                             filled: true,
                             contentPadding: EdgeInsets.only(top: 10,left: 20),

@@ -1,8 +1,11 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Style/style.dart';
 import 'Widget/login/login.dart';
 import 'Widget/register/register.dart';
@@ -29,9 +32,13 @@ class _Home_StartState extends State<Home_Start> {
       setState(() {
         loading = true;
       });
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+       String access_token = preferences.getString('access_token').toString();
       var uri = Uri.parse('${MyConstant().domain}/show_logo');
        var ressum = await http.get(uri,
-      
+      headers: {
+       "Authorization":access_token
+      }
             );
               
       if(ressum.statusCode == 200){
@@ -82,56 +89,54 @@ String name = '',logo = '';
                         Container(
                 width: screenW * 1,
                 height: screenW * 1,
-                child: Center(child: CircularProgressIndicator())): Container(
-          height: MediaQuery.of(context).size.height,
+                child: Center(child: CircularProgressIndicator())): Stack(
+                  children: [
+                    Container(
+          height: MediaQuery.of(context).size.height*0.85,
           width: MediaQuery.of(context).size.width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-             Expanded(
-               child: Center(
-                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                     children: [
-                       Container(
-                           alignment: Alignment.center,
-                           height: 200,
-                           width: MediaQuery.of(context).size.width,
-                         child: Image.network('https://fern.orangeworkshop.info/sexy/public/upload/logo/$logo')
-                       ),
-                         
-                      
-                     ],
-                   ),
+          child: Container(
+                              //  height:MediaQuery.of(context).size.height,
+                              //  width: MediaQuery.of(context).size.width,
+                             child: Image.asset('assets/images/หน้าเเรก.Logo_pages-to-jpg-0002.jpg',
+                                 fit: BoxFit.fill,
+                                                       ),
+                             
+                           
                ),
-               
-             ),
-            
-             Container(
-               height: 330,
+     
+      ),
+                   Container(
+              
+              //  height: 330,
                width:  MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                     image: DecorationImage(
-                       image: AssetImage('assets/images/Back-button-login-Regis.png',),
-                        fit: BoxFit.fill,
-                       ),
-                   ),
-               child: Column(children: [
+              
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.end,
+                 mainAxisAlignment: MainAxisAlignment.end,
+                 children: [
                  Padding(
-                   padding: const EdgeInsets.only(top: 70,right: 35,left: 35),
+                   padding: const EdgeInsets.only(top: 0,right: 35,left: 35),
                    child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
+                    //  crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-                       Text('ยินดีต้อนรับ',textScaleFactor: 1.0,style: textwhite20,),
-                         Container(height: 10,),
-                         Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',textScaleFactor: 1.0,style: textwhite18),
+                       Text('Hello',textScaleFactor: 1.0,style: TextStyle(
+
+  fontSize: 70,
+  fontWeight: FontWeight.w400,
+  color: const Color.fromARGB(255, 0, 0, 0),
+),),
+                         Container(height: 0,),
+                         Text('Welcome to Universe exo group food ',textScaleFactor: 1.0,style: TextStyle(
+
+  fontSize: 14,
+  // fontWeight: FontWeight.bold,
+  color: const Color.fromARGB(255, 0, 0, 0),
+)),
                      ],
                    ),
                  ),
                  Padding(
-                   padding: const EdgeInsets.all(30.0),
+                   padding: const EdgeInsets.only(top: 30,right: 90,left: 90),
                    child: TextButton(
                             onPressed: () {
                               MaterialPageRoute route = MaterialPageRoute(
@@ -141,23 +146,28 @@ String name = '',logo = '';
                             child: Container(
                               height: 40,
                               alignment: Alignment.center,
-                            
+                                
                               child: Text(
-                                'เข้าสู่ระบบ',textScaleFactor: 1.0,
+                                'Login',textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
-                            style: textblack20
+                            style: TextStyle(
+  // fontFamily: 'IBM',
+  fontSize: 20,
+  fontWeight: FontWeight.w500,
+  color: Colors.black,
+)
                               ),
                             ),
                               style: ButtonStyle(
                           shape: MaterialStateProperty.all(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Color(0xffE9EFFF)),
+                              MaterialStateProperty.all<Color>(Color(0xffFCF6AC)),
                         ),
                           ),
                  ),
                  Padding(
-                   padding: const EdgeInsets.only(right: 30,left: 30),
+                   padding: const  EdgeInsets.only(top: 15,right: 90,left: 90,bottom: 30),
                    child: TextButton(
                             onPressed: () {
                               MaterialPageRoute route = MaterialPageRoute(
@@ -167,27 +177,30 @@ String name = '',logo = '';
                             child: Container(
                               height: 40,
                               alignment: Alignment.center,
-                            
+                                
                               child: Text(
-                                'สมัครสมาชิก',textScaleFactor: 1.0,
+                                'Sign up',textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
-                            style: textwhite20
+                            style: TextStyle(
+  // fontFamily: 'IBM',
+  fontSize: 20,
+  fontWeight: FontWeight.w500,
+  color: Colors.black,
+)
                               ),
                             ),
                               style: ButtonStyle(
                           shape: MaterialStateProperty.all(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 0, 0, 0)),
+                              MaterialStateProperty.all<Color>(Color(0xffF696A2)),
                         ),
                           ),
                  ),
                ]),    
              ),
-             
-          ],
-        ),
-      ),
+                  ],
+                ),
     );
   }
 }
